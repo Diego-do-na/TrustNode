@@ -1,9 +1,9 @@
 """
-TrustNode — Motor Universal de Cumplimiento Normativo (Offline RAG)
-main.py — Orquestador FastAPI
+TrustNode — Universal Compliance Engine (Offline RAG)
+main.py — FastAPI orchestrator
 
-Rol: Exponer la API pública, validar entradas/salidas vía Pydantic,
-delegar el trabajo pesado a `ingestion` y `evaluator`. Sin lógica de negocio aquí.
+Role: Expose the public API, validate inputs/outputs via Pydantic,
+delegate heavy work to `ingestion` and `evaluator`. No business logic here.
 """
 
 from __future__ import annotations
@@ -27,7 +27,7 @@ from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
-# Módulos del equipo. Las firmas aquí son el CONTRATO — si cambian, avisar.
+# Team modules. These signatures are the CONTRACT — notify the team if they change.
 from ingestion import ingest_pdf, get_collection_stats
 from evaluator import run_audit, check_llm_alive
 from schemas import (
@@ -44,7 +44,7 @@ from schemas import (
 # ---------------------------------------------------------------------------
 
 OLLAMA_BASE_URL = "http://localhost:11434"
-OLLAMA_TIMEOUT_SECONDS = 5.0  # Solo para health-check; las inferencias reales viven en evaluator
+OLLAMA_TIMEOUT_SECONDS = 5.0  # Health-check only; actual inference timeouts live in evaluator
 MAX_PDF_SIZE_MB = 50
 ALLOWED_MIME_TYPES = {"application/pdf"}
 
@@ -58,14 +58,14 @@ logger = logging.getLogger("trustnode.api")
 
 
 # ---------------------------------------------------------------------------
-# Lifespan: cliente HTTP compartido para hablar con Ollama
+# Lifespan: shared HTTP client for Ollama communication
 # ---------------------------------------------------------------------------
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     """
-    Mantengo un httpx.AsyncClient vivo durante toda la app — más rápido que crear
-    uno por request y centraliza el timeout hacia Ollama.
+    Keeps a single httpx.AsyncClient alive for the entire app lifetime —
+    faster than creating one per request and centralises the Ollama timeout.
     """
     logger.info("Booting TrustNode API…")
     app.state.http = httpx.AsyncClient(
@@ -83,31 +83,31 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="TrustNode — Compliance Engine",
     version="0.1.0",
-    description="Motor de cumplimiento normativo offline basado en RAG local (Ollama + ChromaDB).",
+    description="Offline normative compliance engine based on local RAG (Ollama + ChromaDB).",
     lifespan=lifespan,
 )
 
 
 # ---------------------------------------------------------------------------
-# CORS — permisivo para el hackathon. En prod, restringir origins.
+# CORS — permissive for the hackathon. Restrict origins in production.
 # ---------------------------------------------------------------------------
 
 app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],
-    allow_credentials=False,  # con "*" no se puede usar credentials, así queda consistente
+    allow_credentials=False,  # credentials cannot be used with wildcard origin
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
 
 # ---------------------------------------------------------------------------
-# Manejo global de excepciones — respuestas JSON uniformes
+# Global exception handlers — uniform JSON error responses
 # ---------------------------------------------------------------------------
 
 @app.exception_handler(HTTPException)
 async def http_exception_handler(request: Request, exc: HTTPException):
-    logger.warning("HTTPException %s en %s :: %s", exc.status_code, request.url.path, exc.detail)
+    logger.warning("HTTPException %s at %s :: %s", exc.status_code, request.url.path, exc.detail)
     return JSONResponse(
         status_code=exc.status_code,
         content=ErrorResponse(error=exc.detail, path=request.url.path).model_dump(),
@@ -116,8 +116,8 @@ async def http_exception_handler(request: Request, exc: HTTPException):
 
 @app.exception_handler(Exception)
 async def unhandled_exception_handler(request: Request, exc: Exception):
-    # Captura todo lo que no sea HTTPException — evita filtrar stack traces al cliente.
-    logger.exception("Unhandled error en %s", request.url.path)
+    # Catches everything that is not an HTTPException — prevents leaking stack traces to clients.
+    logger.exception("Unhandled error at %s", request.url.path)
     return JSONResponse(
         status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
         content=ErrorResponse(
@@ -129,11 +129,11 @@ async def unhandled_exception_handler(request: Request, exc: Exception):
 
 
 # ---------------------------------------------------------------------------
-# Dependencias
+# Dependencies
 # ---------------------------------------------------------------------------
 
 async def get_http_client(request: Request) -> httpx.AsyncClient:
-    """Inyecta el AsyncClient compartido (creado en lifespan)."""
+    """Injects the shared AsyncClient created during lifespan startup."""
     return request.app.state.http
 
 
@@ -145,14 +145,14 @@ async def get_http_client(request: Request) -> httpx.AsyncClient:
     "/api/v1/status",
     response_model=StatusResponse,
     tags=["system"],
-    summary="Health-check del stack local (API + Ollama).",
+    summary="Health-check of the local stack (API + Ollama).",
 )
 async def status_endpoint(http: httpx.AsyncClient = Depends(get_http_client)) -> StatusResponse:
     """
-    Verifica:
-      1. Que Ollama responde en :11434
-      2. Que los modelos requeridos (llama3.1:8b, nomic-embed-text) están disponibles.
-    No bloquea si la colección de Chroma está vacía — eso es un estado válido al arrancar.
+    Verifies:
+      1. That Ollama is responding at :11434.
+      2. That the required models (llama3.1:8b, nomic-embed-text) are available.
+    Does not fail if the Chroma collection is empty — that is a valid state on startup.
     """
     ollama_alive = False
     available_models: List[str] = []
@@ -163,21 +163,21 @@ async def status_endpoint(http: httpx.AsyncClient = Depends(get_http_client)) ->
         available_models = [m.get("name", "") for m in data.get("models", [])]
         ollama_alive = True
     except httpx.HTTPError as e:
-        logger.error("Ollama health-check falló: %s", e)
+        logger.error("Ollama health-check failed: %s", e)
 
-    # Delegamos al evaluator una verificación más fina si Ollama está vivo
-    # (p.ej. probar un generate corto). Para hackathon, con /api/tags basta.
+    # Delegate a finer check to the evaluator if Ollama is alive
+    # (e.g. try a short generate). For the hackathon, /api/tags is sufficient.
     if ollama_alive:
         try:
             await run_in_threadpool(check_llm_alive)
         except Exception as e:  # noqa: BLE001
-            logger.warning("check_llm_alive lanzó: %s — degradando estado.", e)
+            logger.warning("check_llm_alive raised: %s — degrading status.", e)
             ollama_alive = False
 
     try:
         chroma_stats = await run_in_threadpool(get_collection_stats)
     except Exception as e:  # noqa: BLE001
-        logger.warning("ChromaDB stats no disponibles: %s", e)
+        logger.warning("ChromaDB stats unavailable: %s", e)
         chroma_stats = {"documents": 0, "available": False}
 
     return StatusResponse(
@@ -194,50 +194,50 @@ async def status_endpoint(http: httpx.AsyncClient = Depends(get_http_client)) ->
     response_model=IngestResponse,
     status_code=status.HTTP_201_CREATED,
     tags=["pipeline"],
-    summary="Ingesta uno o varios PDFs al vector store local.",
+    summary="Ingest one or more PDFs into the local vector store.",
 )
 async def ingest_endpoint(
-    files: List[UploadFile] = File(..., description="PDFs a indexar."),
+    files: List[UploadFile] = File(..., description="PDFs to index."),
 ) -> IngestResponse:
     """
-    Recibe N PDFs, los valida (mime + tamaño) y los pasa al pipeline de ingestion.
-    `ingest_pdf` se encarga de: extracción → chunking → embeddings (nomic) → upsert en Chroma.
+    Receives N PDFs, validates them (mime type + size), and passes them to the ingestion pipeline.
+    `ingest_pdf` handles: extraction → chunking → embeddings (nomic) → upsert into Chroma.
     """
     if not files:
-        raise HTTPException(status_code=400, detail="No se recibieron archivos.")
+        raise HTTPException(status_code=400, detail="No files received.")
 
     results = []
     for upload in files:
-        # Validación de tipo
+        # MIME type validation
         if upload.content_type not in ALLOWED_MIME_TYPES:
             raise HTTPException(
                 status_code=415,
-                detail=f"Tipo no soportado: {upload.content_type} ({upload.filename}). Solo PDF.",
+                detail=f"Unsupported type: {upload.content_type} ({upload.filename}). PDF only.",
             )
 
-        # Lectura controlada (limita tamaño en memoria)
+        # Controlled read (caps memory usage)
         payload = await upload.read()
         size_mb = len(payload) / (1024 * 1024)
         if size_mb > MAX_PDF_SIZE_MB:
             raise HTTPException(
                 status_code=413,
-                detail=f"{upload.filename} pesa {size_mb:.1f} MB (límite {MAX_PDF_SIZE_MB} MB).",
+                detail=f"{upload.filename} is {size_mb:.1f} MB (limit: {MAX_PDF_SIZE_MB} MB).",
             )
 
-        logger.info("Ingestando %s (%.2f MB)…", upload.filename, size_mb)
+        logger.info("Ingesting %s (%.2f MB)…", upload.filename, size_mb)
 
-        # `ingest_pdf` es CPU-bound (parsing + embeddings) → threadpool para no bloquear el loop.
+        # `ingest_pdf` is CPU-bound (parsing + embeddings) → threadpool to avoid blocking the loop.
         try:
             doc_meta = await run_in_threadpool(ingest_pdf, payload, upload.filename)
         except Exception as e:  # noqa: BLE001
-            logger.exception("Falló ingesta de %s", upload.filename)
+            logger.exception("Ingestion failed for %s", upload.filename)
             raise HTTPException(
                 status_code=500,
-                detail=f"Error procesando {upload.filename}: {e}",
+                detail=f"Error processing {upload.filename}: {e}",
             ) from e
 
         results.append(doc_meta)
-        logger.info("✔ %s indexado (chunks=%s)", upload.filename, doc_meta.get("chunks", "?"))
+        logger.info("✔ %s indexed (chunks=%s)", upload.filename, doc_meta.get("chunks", "?"))
 
     return IngestResponse(
         ingested=len(results),
@@ -249,32 +249,32 @@ async def ingest_endpoint(
     "/api/v1/audit",
     response_model=AuditResponse,
     tags=["pipeline"],
-    summary="Lanza una auditoría contra el estándar normativo recibido.",
+    summary="Run an audit against the received normative standard.",
 )
 async def audit_endpoint(payload: AuditRequest) -> AuditResponse:
     """
-    Toma un estándar (lista de controles/requisitos) y por cada uno:
-      1. Recupera chunks relevantes de Chroma (lo hace evaluator internamente).
-      2. Llama a llama3.1:8b con un prompt estructurado.
-      3. Parsea la respuesta a un veredicto + evidencia.
+    Takes a standard (list of controls/requirements) and for each one:
+      1. Retrieves relevant chunks from Chroma (handled internally by evaluator).
+      2. Calls llama3.1:8b with a structured prompt.
+      3. Parses the response into a verdict + evidence.
 
-    TODO(post-hackathon): si supera ~30s, mover a patrón job-queue (POST devuelve job_id).
+    TODO(post-hackathon): if runtime exceeds ~30s, move to job-queue pattern (POST returns job_id).
     """
     logger.info(
-        "Auditoría solicitada: estándar=%r, controles=%d",
+        "Audit requested: standard=%r, controls=%d",
         payload.standard_name,
         len(payload.controls),
     )
 
     try:
-        # El evaluator orquesta retrieval + prompting + parsing.
-        # Es bloqueante (espera al LLM local) → threadpool.
+        # The evaluator orchestrates retrieval + prompting + parsing.
+        # Blocking (waits on local LLM) → threadpool.
         result = await run_in_threadpool(run_audit, payload)
     except Exception as e:  # noqa: BLE001
-        logger.exception("Auditoría falló")
+        logger.exception("Audit failed")
         raise HTTPException(status_code=500, detail=f"Audit error: {e}") from e
 
-    logger.info("Auditoría completa: %d/%d controles evaluados.", len(result.findings), len(payload.controls))
+    logger.info("Audit complete: %d/%d controls evaluated.", len(result.findings), len(payload.controls))
     return result
 
 
@@ -289,6 +289,6 @@ if __name__ == "__main__":
         "main:app",
         host="0.0.0.0",
         port=8000,
-        reload=True,  # quítalo en demo final para evitar recargas accidentales
+        reload=True,  # remove for the final demo to avoid accidental reloads
         log_level="info",
     )

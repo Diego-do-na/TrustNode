@@ -1,14 +1,14 @@
 """
-ingestion.py — Módulo de ingesta de documentos para TrustNode
-=============================================================
-Responsabilidades:
-  1. Extraer y fragmentar texto de PDFs empresariales (PyMuPDF).
-  2. Generar embeddings locales vía Ollama (nomic-embed-text).
-  3. Persistir vectores y metadata en ChromaDB local.
-  4. Consultar evidencia relevante por palabras clave.
+ingestion.py — Document ingestion module for TrustNode
+=======================================================
+Responsibilities:
+  1. Extract and chunk text from corporate PDFs (PyMuPDF).
+  2. Generate local embeddings via Ollama (nomic-embed-text).
+  3. Persist vectors and metadata in local ChromaDB.
+  4. Query relevant evidence by keywords.
 
-Dependencias: pymupdf, chromadb, requests
-No usa LangChain. Todas las llamadas son directas.
+Dependencies: pymupdf, chromadb, requests
+No LangChain. All calls are direct.
 """
 
 import re
@@ -20,7 +20,7 @@ import chromadb
 from chromadb.config import Settings
 
 # ──────────────────────────────────────────────
-# Configuración global
+# Global configuration
 # ──────────────────────────────────────────────
 OLLAMA_URL   = "http://localhost:11434/api/embeddings"
 OLLAMA_MODEL = "nomic-embed-text"
@@ -28,11 +28,11 @@ CHROMA_PATH  = "./chroma_db"
 
 
 # ──────────────────────────────────────────────
-# Tipo interno para metadata de chunks
+# Internal type for chunk metadata
 # ──────────────────────────────────────────────
 @dataclass
 class ChunkRecord:
-    """Representa un fragmento de texto con su metadata de origen."""
+    """Represents a text fragment with its source metadata."""
     text:      str
     page:      int
     source:    str
@@ -40,7 +40,7 @@ class ChunkRecord:
 
 
 # ══════════════════════════════════════════════
-# 1. EXTRACCIÓN Y CHUNKING DE PDFs
+# 1. PDF EXTRACTION AND CHUNKING
 # ══════════════════════════════════════════════
 
 def extract_text_chunks(
@@ -49,25 +49,25 @@ def extract_text_chunks(
     overlap: int = 50,
 ) -> list[str]:
     """
-    Abre un PDF con PyMuPDF, extrae el texto página a página,
-    lo limpia y lo divide en fragmentos de `chunk_size` palabras
-    con un solapamiento de `overlap` palabras para preservar contexto.
+    Opens a PDF with PyMuPDF, extracts text page by page, cleans it,
+    and splits it into chunks of `chunk_size` words with an overlap of
+    `overlap` words to preserve context across chunk boundaries.
 
-    Retorna únicamente los textos (list[str]) para cumplir el contrato
-    público del módulo. Cuando necesites metadata (página, fuente, índice)
-    usa `extract_text_chunks_with_metadata()`.
+    Returns only the text strings (list[str]) to satisfy the module's
+    public contract. When metadata (page, source, index) is needed,
+    use `extract_text_chunks_with_metadata()`.
 
     Args:
-        file_path:  Ruta absoluta o relativa al archivo PDF.
-        chunk_size: Número de palabras por chunk (default 500).
-        overlap:    Palabras compartidas entre chunks consecutivos (default 50).
+        file_path:  Absolute or relative path to the PDF file.
+        chunk_size: Number of words per chunk (default 500).
+        overlap:    Words shared between consecutive chunks (default 50).
 
     Returns:
-        Lista de strings; cada elemento es un fragmento de texto limpio.
+        List of strings; each element is a clean text fragment.
 
     Raises:
-        FileNotFoundError: Si el PDF no existe en la ruta indicada.
-        RuntimeError:      Si PyMuPDF no puede abrir el archivo.
+        FileNotFoundError: If the PDF does not exist at the given path.
+        RuntimeError:      If PyMuPDF cannot open the file.
     """
     return [r.text for r in extract_text_chunks_with_metadata(file_path, chunk_size, overlap)]
 
@@ -78,24 +78,24 @@ def extract_text_chunks_with_metadata(
     overlap: int = 50,
 ) -> list[ChunkRecord]:
     """
-    Versión extendida de `extract_text_chunks` que incluye metadata
-    (página, fuente, índice de chunk). Usada internamente por
-    `process_and_store_document` para construir los registros de ChromaDB.
+    Extended version of `extract_text_chunks` that includes metadata
+    (page, source, chunk index). Used internally by
+    `process_and_store_document` to build ChromaDB records.
 
     Args:
-        file_path:  Ruta absoluta o relativa al archivo PDF.
-        chunk_size: Número de palabras por chunk (default 500).
-        overlap:    Palabras compartidas entre chunks consecutivos (default 50).
+        file_path:  Absolute or relative path to the PDF file.
+        chunk_size: Number of words per chunk (default 500).
+        overlap:    Words shared between consecutive chunks (default 50).
 
     Returns:
-        Lista de ChunkRecord con campos: text, page, source, chunk_idx.
+        List of ChunkRecord with fields: text, page, source, chunk_idx.
 
     Raises:
-        FileNotFoundError: Si el PDF no existe en la ruta indicada.
-        RuntimeError:      Si PyMuPDF no puede abrir el archivo.
+        FileNotFoundError: If the PDF does not exist at the given path.
+        RuntimeError:      If PyMuPDF cannot open the file.
     """
     if not os.path.isfile(file_path):
-        raise FileNotFoundError(f"PDF no encontrado: {file_path}")
+        raise FileNotFoundError(f"PDF not found: {file_path}")
 
     source_name = os.path.basename(file_path)
     records: list[ChunkRecord] = []
@@ -104,24 +104,24 @@ def extract_text_chunks_with_metadata(
     try:
         doc = fitz.open(file_path)
     except Exception as exc:
-        raise RuntimeError(f"No se pudo abrir '{file_path}' con PyMuPDF: {exc}") from exc
+        raise RuntimeError(f"Could not open '{file_path}' with PyMuPDF: {exc}") from exc
 
     with doc:
         for page_num, page in enumerate(doc, start=1):
             raw_text = page.get_text("text")
 
-            # ── Limpieza del texto ──────────────────────────
-            # Reemplaza guiones de separación silábica antes de colapsar líneas
+            # ── Text cleaning ───────────────────────────────
+            # Replace hyphenated line breaks before collapsing lines
             cleaned = raw_text.replace("-\n", "").replace("\n", " ")
-            # Colapsa múltiples espacios en uno
+            # Collapse multiple spaces into one
             cleaned = re.sub(r"\s{2,}", " ", cleaned).strip()
 
             if not cleaned:
-                continue  # Página vacía (imagen sin capa de texto OCR)
+                continue  # Empty page (image without OCR text layer)
 
-            # ── Ventana deslizante por palabras ─────────────
-            # step = chunk_size - overlap garantiza que cada chunk
-            # comparta `overlap` palabras con el siguiente.
+            # ── Sliding window over words ───────────────────
+            # step = chunk_size - overlap ensures each chunk
+            # shares `overlap` words with the next one.
             words = cleaned.split()
             step  = chunk_size - overlap
 
@@ -130,7 +130,7 @@ def extract_text_chunks_with_metadata(
                 chunk_text  = " ".join(chunk_words).strip()
 
                 if len(chunk_words) < 10:
-                    # Descarta fragmentos residuales demasiado pequeños
+                    # Discard residual fragments that are too small
                     continue
 
                 records.append(ChunkRecord(
@@ -141,28 +141,28 @@ def extract_text_chunks_with_metadata(
                 ))
                 chunk_idx += 1
 
-    print(f"  [extract] '{source_name}' → {chunk_idx} chunks extraídos.")
+    print(f"  [extract] '{source_name}' → {chunk_idx} chunks extracted.")
     return records
 
 
 # ══════════════════════════════════════════════
-# 2. GENERACIÓN DE EMBEDDINGS VÍA OLLAMA
+# 2. EMBEDDING GENERATION VIA OLLAMA
 # ══════════════════════════════════════════════
 
 def get_ollama_embedding(text: str) -> list[float]:
     """
-    Llama a la API local de Ollama para obtener el vector embedding
-    del texto recibido usando el modelo `nomic-embed-text`.
+    Calls the local Ollama API to obtain the embedding vector for the
+    given text using the `nomic-embed-text` model.
 
     Args:
-        text: Texto a vectorizar (un chunk de documento o una consulta).
+        text: Text to vectorize (a document chunk or a query string).
 
     Returns:
-        Lista de floats que representa el vector embedding.
+        List of floats representing the embedding vector.
 
     Raises:
-        ConnectionError: Si Ollama no está disponible en localhost:11434.
-        ValueError:      Si la respuesta de Ollama no contiene el campo esperado.
+        ConnectionError: If Ollama is not reachable at localhost:11434.
+        ValueError:      If the Ollama response does not contain the expected field.
     """
     payload = {
         "model":  OLLAMA_MODEL,
@@ -174,31 +174,31 @@ def get_ollama_embedding(text: str) -> list[float]:
         response.raise_for_status()
     except requests.exceptions.ConnectionError as exc:
         raise ConnectionError(
-            f"No se pudo conectar a Ollama en {OLLAMA_URL}. "
-            "Asegúrate de que el servicio esté corriendo (`ollama serve`)."
+            f"Could not connect to Ollama at {OLLAMA_URL}. "
+            "Make sure the service is running (`ollama serve`)."
         ) from exc
     except requests.exceptions.Timeout as exc:
         raise ConnectionError(
-            f"Ollama tardó demasiado en responder (timeout=30s). "
-            f"Revisa si el modelo '{OLLAMA_MODEL}' está descargado (`ollama pull {OLLAMA_MODEL}`)."
+            f"Ollama took too long to respond (timeout=30s). "
+            f"Check if model '{OLLAMA_MODEL}' is downloaded (`ollama pull {OLLAMA_MODEL}`)."
         ) from exc
     except requests.exceptions.HTTPError as exc:
         raise ValueError(
-            f"Ollama devolvió un error HTTP {response.status_code}: {response.text}"
+            f"Ollama returned HTTP error {response.status_code}: {response.text}"
         ) from exc
 
     data = response.json()
 
     if "embedding" not in data:
         raise ValueError(
-            f"Respuesta inesperada de Ollama (sin campo 'embedding'): {data}"
+            f"Unexpected Ollama response (missing 'embedding' field): {data}"
         )
 
     return data["embedding"]
 
 
 # ══════════════════════════════════════════════
-# 3. INGESTA COMPLETA: PDF → EMBEDDING → CHROMADB
+# 3. FULL INGESTION: PDF → EMBEDDING → CHROMADB
 # ══════════════════════════════════════════════
 
 def process_and_store_document(
@@ -206,54 +206,54 @@ def process_and_store_document(
     collection_name: str = "trustnode_evidence",
 ) -> None:
     """
-    Función principal de ingesta. Para cada PDF en `file_paths`:
-      1. Extrae y fragmenta el texto (con metadata).
-      2. Genera embeddings con Ollama.
-      3. Almacena vectores + metadata en ChromaDB persistente.
+    Main ingestion function. For each PDF in `file_paths`:
+      1. Extracts and chunks the text (with metadata).
+      2. Generates embeddings with Ollama.
+      3. Stores vectors and metadata in persistent ChromaDB.
 
-    La colección se elimina y re-crea en cada ejecución para garantizar
-    sincronización total con los archivos fuente.
+    The collection is deleted and recreated on each run to guarantee
+    full synchronization with the source files.
 
     Args:
-        file_paths:      Lista de rutas a los PDFs a procesar.
-        collection_name: Nombre de la colección en ChromaDB.
+        file_paths:      List of paths to the PDFs to process.
+        collection_name: Name of the ChromaDB collection.
     """
-    # ── Inicializar ChromaDB persistente ───────────────────
-    print(f"[chroma] Inicializando cliente persistente en '{CHROMA_PATH}'...")
+    # ── Initialize persistent ChromaDB ─────────────────────
+    print(f"[chroma] Initializing persistent client at '{CHROMA_PATH}'...")
     client = chromadb.PersistentClient(
         path=CHROMA_PATH,
         settings=Settings(anonymized_telemetry=False),
     )
 
-    # Eliminar colección anterior para re-indexar desde cero
+    # Delete existing collection to re-index from scratch
     existing = [c.name for c in client.list_collections()]
     if collection_name in existing:
-        print(f"[chroma] Eliminando colección existente '{collection_name}'...")
+        print(f"[chroma] Deleting existing collection '{collection_name}'...")
         client.delete_collection(collection_name)
 
     collection = client.create_collection(
         name=collection_name,
-        metadata={"hnsw:space": "cosine"},  # distancia coseno para similitud semántica
+        metadata={"hnsw:space": "cosine"},  # cosine distance for semantic similarity
     )
-    print(f"[chroma] Colección '{collection_name}' creada.")
+    print(f"[chroma] Collection '{collection_name}' created.")
 
-    # ── Iterar sobre los PDFs ───────────────────────────────
+    # ── Iterate over PDFs ───────────────────────────────────
     total_stored = 0
 
     for file_path in file_paths:
-        print(f"\n[ingesta] Procesando: {file_path}")
+        print(f"\n[ingest] Processing: {file_path}")
 
         try:
             records = extract_text_chunks_with_metadata(file_path)
         except (FileNotFoundError, RuntimeError) as exc:
-            print(f"  [WARN] Saltando '{file_path}': {exc}")
+            print(f"  [WARN] Skipping '{file_path}': {exc}")
             continue
 
         if not records:
-            print(f"  [WARN] No se extrajo texto de '{file_path}'. ¿Es un PDF escaneado?")
+            print(f"  [WARN] No text extracted from '{file_path}'. Is it a scanned PDF?")
             continue
 
-        # ── Generar embeddings y preparar batch ────────────
+        # ── Generate embeddings and prepare batch ───────────
         ids:        list[str]         = []
         embeddings: list[list[float]] = []
         documents:  list[str]         = []
@@ -263,8 +263,8 @@ def process_and_store_document(
             try:
                 vector = get_ollama_embedding(record.text)
             except (ConnectionError, ValueError) as exc:
-                print(f"  [ERROR] Embedding fallido (chunk {record.chunk_idx}): {exc}")
-                continue  # Saltar este chunk sin interrumpir toda la ingesta
+                print(f"  [ERROR] Embedding failed (chunk {record.chunk_idx}): {exc}")
+                continue  # Skip this chunk without aborting the entire ingestion
 
             doc_id = f"{record.source}_chunk{record.chunk_idx}"
 
@@ -277,7 +277,7 @@ def process_and_store_document(
                 "chunk_idx": record.chunk_idx,
             })
 
-        # ── Guardar en ChromaDB en lotes de 100 ────────────
+        # ── Store in ChromaDB in batches of 100 ────────────
         BATCH_SIZE = 100
         for i in range(0, len(ids), BATCH_SIZE):
             batch = slice(i, i + BATCH_SIZE)
@@ -290,13 +290,13 @@ def process_and_store_document(
 
         stored = len(ids)
         total_stored += stored
-        print(f"  [chroma] {stored} chunks almacenados para '{os.path.basename(file_path)}'.")
+        print(f"  [chroma] {stored} chunks stored for '{os.path.basename(file_path)}'.")
 
-    print(f"\n[ingesta] ✓ Proceso completado. Total chunks en colección: {total_stored}")
+    print(f"\n[ingest] Done. Total chunks in collection: {total_stored}")
 
 
 # ══════════════════════════════════════════════
-# 4. CONSULTA DE EVIDENCIA POR PALABRAS CLAVE
+# 4. EVIDENCE QUERY BY KEYWORDS
 # ══════════════════════════════════════════════
 
 def query_evidence(
@@ -305,23 +305,22 @@ def query_evidence(
     collection_name: str = "trustnode_evidence",
 ) -> str:
     """
-    Convierte una lista de palabras clave en un embedding, busca en
-    ChromaDB los fragmentos más relevantes y retorna un bloque de
-    texto consolidado listo para consumir en el pipeline de auditoría.
+    Converts a list of keywords into an embedding, searches ChromaDB for
+    the most relevant fragments, and returns a consolidated text block
+    ready to be consumed by the audit pipeline.
 
     Args:
-        keywords:        Lista de términos de búsqueda (ej. ["GDPR", "datos personales"]).
-        n_results:       Número de fragmentos a recuperar (default 3).
-        collection_name: Nombre de la colección a consultar.
+        keywords:        List of search terms (e.g. ["GDPR", "personal data"]).
+        n_results:       Number of fragments to retrieve (default 3).
+        collection_name: Name of the collection to query.
 
     Returns:
-        String con los fragmentos más relevantes concatenados,
-        cada uno encabezado por su metadata (fuente, página, relevancia).
-        Devuelve un mensaje de aviso si la colección está vacía o
-        no se encuentran resultados.
+        String with the most relevant fragments concatenated, each headed
+        by its metadata (source, page, relevance score). Returns a warning
+        message if the collection is empty or no results are found.
 
     Raises:
-        ConnectionError: Si Ollama no está disponible al generar el query embedding.
+        ConnectionError: If Ollama is unavailable when generating the query embedding.
     """
     client = chromadb.PersistentClient(
         path=CHROMA_PATH,
@@ -331,34 +330,34 @@ def query_evidence(
     existing = [c.name for c in client.list_collections()]
     if collection_name not in existing:
         return (
-            f"[query_evidence] La colección '{collection_name}' no existe. "
-            "Ejecuta primero `process_and_store_document()`."
+            f"[query_evidence] Collection '{collection_name}' does not exist. "
+            "Run `process_and_store_document()` first."
         )
 
     collection = client.get_collection(collection_name)
 
     if collection.count() == 0:
-        return "[query_evidence] La colección está vacía. No hay evidencia indexada."
+        return "[query_evidence] Collection is empty. No evidence has been indexed."
 
-    # ── Construir query embedding ──────────────────────────
+    # ── Build query embedding ───────────────────────────────
     query_text = " ".join(keywords)
-    print(f"[query] Buscando: '{query_text}'")
+    print(f"[query] Searching: '{query_text}'")
 
     try:
         query_vector = get_ollama_embedding(query_text)
     except (ConnectionError, ValueError) as exc:
         raise ConnectionError(
-            f"No se pudo generar el embedding de consulta: {exc}"
+            f"Could not generate query embedding: {exc}"
         ) from exc
 
-    # ── Ejecutar búsqueda en ChromaDB ──────────────────────
+    # ── Run ChromaDB search ─────────────────────────────────
     results = collection.query(
         query_embeddings=[query_vector],
         n_results=min(n_results, collection.count()),
         include=["documents", "metadatas", "distances"],
     )
 
-    # ── Consolidar resultados en un solo bloque de texto ───
+    # ── Consolidate results into a single text block ────────
     fragments: list[str] = []
 
     docs      = results.get("documents", [[]])[0]
@@ -366,31 +365,31 @@ def query_evidence(
     distances = results.get("distances", [[]])[0]
 
     for doc, meta, dist in zip(docs, metas, distances):
-        relevance = round((1 - dist) * 100, 2)  # distancia coseno → % similitud
+        relevance = round((1 - dist) * 100, 2)  # cosine distance → % similarity
         header = (
-            f"[Fuente: {meta.get('source', 'desconocido')} | "
-            f"Página: {meta.get('page', '?')} | "
-            f"Relevancia: {relevance}%]"
+            f"[Source: {meta.get('source', 'unknown')} | "
+            f"Page: {meta.get('page', '?')} | "
+            f"Relevance: {relevance}%]"
         )
         fragments.append(f"{header}\n{doc}")
 
     if not fragments:
-        return "[query_evidence] No se encontraron fragmentos relevantes para los términos dados."
+        return "[query_evidence] No relevant fragments found for the given keywords."
 
     return "\n\n---\n\n".join(fragments)
 
 
 # ══════════════════════════════════════════════
-# PUNTO DE ENTRADA PARA PRUEBAS RÁPIDAS
+# ENTRY POINT FOR QUICK TESTING
 # ══════════════════════════════════════════════
 
 if __name__ == "__main__":
-    # Ejemplo de uso — descomentar para probar:
+    # Usage example — uncomment to test:
     #
-    # test_files = ["documentos/politica_privacidad.pdf", "documentos/contrato_2024.pdf"]
+    # test_files = ["documents/privacy_policy.pdf", "documents/contract_2024.pdf"]
     # process_and_store_document(test_files)
     #
-    # evidencia = query_evidence(["protección de datos", "consentimiento", "GDPR"])
-    # print(evidencia)
+    # evidence = query_evidence(["data protection", "consent", "GDPR"])
+    # print(evidence)
 
-    print("ingestion.py listo. Importa las funciones desde main.py.")
+    print("ingestion.py ready. Import functions from main.py.")
