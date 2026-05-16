@@ -1,5 +1,5 @@
 from typing import Literal
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, computed_field
 
 
 class ControlSchema(BaseModel):
@@ -32,3 +32,39 @@ class FullAuditReport(BaseModel):
     standard_audited: str = Field(description="Name of the normative standard that was audited, matching StandardSchema.standard_name.")
     global_score_percentage: float = Field(description="Overall compliance score expressed as a percentage (0.0–100.0), calculated as the ratio of fully compliant controls to total controls evaluated.")
     results: list[AuditResult] = Field(description="List of individual audit results, one entry per evaluated control, in the same order as the controls in the standard.")
+
+
+# ---------------------------------------------------------------------------
+# API contract schemas — consumed by main.py
+# ---------------------------------------------------------------------------
+
+class AuditRequest(StandardSchema):
+    """Audit request payload: a complete normative standard with its controls."""
+
+
+class AuditResponse(FullAuditReport):
+    """Audit response: inherits FullAuditReport and exposes `findings` as an alias for `results`."""
+
+    @computed_field
+    @property
+    def findings(self) -> list[AuditResult]:
+        return self.results
+
+
+class IngestResponse(BaseModel):
+    ingested: int = Field(description="Number of documents successfully ingested.")
+    documents: list[dict] = Field(description="Metadata dict for each ingested document.")
+
+
+class StatusResponse(BaseModel):
+    api: str
+    ollama_alive: bool
+    ollama_url: str
+    models_available: list[str]
+    chroma: dict
+
+
+class ErrorResponse(BaseModel):
+    error: str
+    detail: str = ""
+    path: str = ""

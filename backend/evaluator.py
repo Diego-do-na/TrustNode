@@ -19,6 +19,9 @@ from typing import Literal
 import httpx
 from pydantic import BaseModel, ValidationError
 
+from schemas import AuditRequest, AuditResponse, AuditResult as SchemaAuditResult
+from ingestion import query_evidence
+
 # ---------------------------------------------------------------------------
 # Logging
 # ---------------------------------------------------------------------------
@@ -159,6 +162,66 @@ def evaluate_control(
             type(exc).__name__,
         )
         return _FALLBACK.copy()
+
+
+# ---------------------------------------------------------------------------
+# Risk mapping helper
+# ---------------------------------------------------------------------------
+
+_STATUS_TO_RISK: dict[str, str] = {
+    "Compliant":     "None",
+    "Partial":       "Medium",
+    "Non-Compliant": "High",
+}
+
+# ---------------------------------------------------------------------------
+# Public API — consumed by main.py
+# ---------------------------------------------------------------------------
+
+
+def check_llm_alive() -> None:
+    """Raise RuntimeError if the Ollama LLM endpoint is not reachable."""
+    try:
+        with httpx.Client(timeout=10) as client:
+            resp = client.get("http://localhost:11434/api/tags")
+            resp.raise_for_status()
+    except httpx.HTTPError as exc:
+        raise RuntimeError(f"Ollama LLM not reachable: {exc}") from exc
+
+
+def run_audit(payload: AuditRequest) -> AuditResponse:
+    """Evaluate every control in *payload* and return a full AuditResponse.
+
+    For each control: retrieves evidence from ChromaDB via query_evidence,
+    calls evaluate_control, maps the raw result to SchemaAuditResult, and
+    collects everything into an AuditResponse.
+    """
+    findings: list[SchemaAuditResult] = []
+
+    for control in payload.controls:
+        evidence = query_evidence(control.search_keywords)
+        raw = evaluate_control(
+            standard_name=payload.standard_name,
+            control=control.model_dump(),
+            chromadb_evidence=evidence,
+        )
+        findings.append(SchemaAuditResult(
+            control_id=control.control_id,
+            status=raw["status"],
+            evidence_found=raw["evidence_found"],
+            gaps=raw["gaps"],
+            recommendation=raw["recommendation"],
+            risk_level=_STATUS_TO_RISK.get(raw["status"], "High"),
+        ))
+
+    compliant = sum(1 for f in findings if f.status == "Compliant")
+    score = round(compliant / len(findings) * 100, 1) if findings else 0.0
+
+    return AuditResponse(
+        standard_audited=payload.standard_name,
+        global_score_percentage=score,
+        results=findings,
+    )
 
 
 # ---------------------------------------------------------------------------

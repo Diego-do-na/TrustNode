@@ -380,6 +380,96 @@ def query_evidence(
 
 
 # ══════════════════════════════════════════════
+# 5. PUBLIC API — consumed by main.py
+# ══════════════════════════════════════════════
+
+def get_collection_stats(collection_name: str = "trustnode_evidence") -> dict:
+    """Return document count and availability for the ChromaDB collection."""
+    client = chromadb.PersistentClient(
+        path=CHROMA_PATH,
+        settings=Settings(anonymized_telemetry=False),
+    )
+    existing = [c.name for c in client.list_collections()]
+    if collection_name not in existing:
+        return {"documents": 0, "available": False, "collection": collection_name}
+    collection = client.get_collection(collection_name)
+    return {
+        "documents": collection.count(),
+        "available": True,
+        "collection": collection_name,
+    }
+
+
+def ingest_pdf(file_bytes: bytes, filename: str, collection_name: str = "trustnode_evidence") -> dict:
+    """Ingest a single PDF from raw bytes into ChromaDB.
+
+    Writes bytes to a temp file, extracts chunks, embeds them and upserts
+    into the persistent collection (additive — does not wipe existing data).
+
+    Returns a metadata dict with keys ``filename`` and ``chunks``.
+    """
+    import tempfile
+
+    with tempfile.NamedTemporaryFile(suffix=".pdf", delete=False) as tmp:
+        tmp.write(file_bytes)
+        tmp_path = tmp.name
+
+    try:
+        records = extract_text_chunks_with_metadata(tmp_path)
+    finally:
+        os.unlink(tmp_path)
+
+    if not records:
+        return {"filename": filename, "chunks": 0, "warning": "No text extracted."}
+
+    client = chromadb.PersistentClient(
+        path=CHROMA_PATH,
+        settings=Settings(anonymized_telemetry=False),
+    )
+    existing = [c.name for c in client.list_collections()]
+    if collection_name in existing:
+        collection = client.get_collection(collection_name)
+    else:
+        collection = client.create_collection(
+            name=collection_name,
+            metadata={"hnsw:space": "cosine"},
+        )
+
+    ids:        list[str]         = []
+    embeddings: list[list[float]] = []
+    documents:  list[str]         = []
+    metadatas:  list[dict]        = []
+
+    for record in records:
+        try:
+            vector = get_ollama_embedding(record.text)
+        except (ConnectionError, ValueError):
+            continue
+
+        ids.append(f"{filename}_chunk{record.chunk_idx}")
+        embeddings.append(vector)
+        documents.append(record.text)
+        metadatas.append({
+            "source":    filename,
+            "page":      record.page,
+            "chunk_idx": record.chunk_idx,
+        })
+
+    BATCH_SIZE = 100
+    for i in range(0, len(ids), BATCH_SIZE):
+        b = slice(i, i + BATCH_SIZE)
+        collection.upsert(
+            ids=ids[b],
+            embeddings=embeddings[b],
+            documents=documents[b],
+            metadatas=metadatas[b],
+        )
+
+    print(f"  [ingest_pdf] '{filename}' → {len(ids)} chunks stored.")
+    return {"filename": filename, "chunks": len(ids)}
+
+
+# ══════════════════════════════════════════════
 # ENTRY POINT FOR QUICK TESTING
 # ══════════════════════════════════════════════
 
