@@ -209,6 +209,78 @@ def check_llm_alive() -> None:
         raise RuntimeError(f"Ollama LLM not reachable: {exc}") from exc
 
 
+SUMMARY_SYSTEM_PROMPT_TEMPLATE = (
+    "You are a Senior Cybersecurity Auditor. Your task is to summarise the company's "
+    "compliance posture based on the findings provided. Be professional, focus on "
+    "critical risks, and finish with an overall conclusion. "
+    "Write the entire response in {language}. "
+    "Use at most 3 paragraphs, plain text only — no markdown, no bullet lists, no "
+    "headings. Do not include any preamble such as 'Sure' or 'Here is the summary'; "
+    "output only the summary itself."
+)
+
+
+def generate_executive_summary(
+    standard_audited: str,
+    global_score_percentage: float,
+    findings: list[dict],
+    language: str = "English",
+) -> str:
+    """Call Llama 3.1 to produce a 3-paragraph executive summary of an audit.
+
+    Args:
+        standard_audited:         Name of the standard that was audited.
+        global_score_percentage:  Overall compliance score (0–100).
+        findings:                 List of finding dicts (control_id, status,
+                                  evidence_found, gaps, recommendation,
+                                  risk_level).
+
+    Returns:
+        Plain-text summary string. Raises RuntimeError on inference failure.
+    """
+    findings_block_lines: list[str] = []
+    for f in findings:
+        findings_block_lines.append(
+            f"- [{f.get('control_id', '?')}] {f.get('status', '?')} "
+            f"(risk: {f.get('risk_level', '?')}) — "
+            f"gaps: {f.get('gaps', 'None') or 'None'} | "
+            f"recommendation: {f.get('recommendation', 'None') or 'None'}"
+        )
+    findings_block = "\n".join(findings_block_lines) if findings_block_lines else "No findings."
+
+    lang = (language or "English").strip() or "English"
+    system_prompt = SUMMARY_SYSTEM_PROMPT_TEMPLATE.format(language=lang)
+
+    user_message = (
+        f"AUDITED STANDARD: {standard_audited}\n"
+        f"GLOBAL SCORE: {global_score_percentage:.1f}%\n"
+        f"FINDINGS:\n{findings_block}\n\n"
+        f"Write the executive summary in {lang}, following the system instructions."
+    )
+
+    full_prompt = f"{system_prompt}\n\n{user_message}"
+
+    payload = {
+        "model": OLLAMA_MODEL,
+        "prompt": full_prompt,
+        "stream": False,
+    }
+
+    try:
+        with httpx.Client(timeout=OLLAMA_TIMEOUT) as client:
+            response = client.post(OLLAMA_URL, json=payload)
+            response.raise_for_status()
+        text: str = response.json()["response"].strip()
+    except (httpx.HTTPError, KeyError, json.JSONDecodeError) as exc:
+        logger.exception("generate_executive_summary failed")
+        raise RuntimeError(f"LLM summary generation failed: {exc}") from exc
+
+    if not text:
+        raise RuntimeError("LLM returned an empty summary.")
+
+    return text
+
+
 def run_audit(payload: AuditRequest) -> AuditResponse:
     """Evaluate every control in *payload* and return a full AuditResponse.
 

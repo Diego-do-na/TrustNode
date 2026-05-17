@@ -9,8 +9,9 @@ interface PageContentProps {
   tab: NavId;
   auditResults: AuditResponse[];
   lastAuditAt: Date | null;
+  reportLanguage: string;
   onNavigate: (tab: NavId) => void;
-  onShowReport: (results: AuditResponse[]) => void;
+  onShowReport: (results: AuditResponse[], language?: string) => void;
   onOpenUpload: () => void;
 }
 
@@ -18,6 +19,7 @@ export function PageContent({
   tab,
   auditResults,
   lastAuditAt,
+  reportLanguage,
   onNavigate,
   onShowReport,
   onOpenUpload,
@@ -29,6 +31,7 @@ export function PageContent({
         <OverviewPage
           auditResults={auditResults}
           lastAuditAt={lastAuditAt}
+          reportLanguage={reportLanguage}
           onOpenUpload={onOpenUpload}
         />
       );
@@ -43,6 +46,7 @@ export function PageContent({
         <OverviewPage
           auditResults={auditResults}
           lastAuditAt={lastAuditAt}
+          reportLanguage={reportLanguage}
           onOpenUpload={onOpenUpload}
         />
       );

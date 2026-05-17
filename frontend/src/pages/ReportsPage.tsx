@@ -2,7 +2,7 @@ import { formatRelativeTime, useAppState } from "../context/AppStateContext";
 import type { AuditResponse } from "../api/client";
 
 interface ReportsPageProps {
-  onShowReport: (results: AuditResponse[]) => void;
+  onShowReport: (results: AuditResponse[], language?: string) => void;
 }
 
 function scoreClass(score: number): "high" | "mid" | "low" {
@@ -48,7 +48,7 @@ export function ReportsPage({ onShowReport }: ReportsPageProps) {
                     <button
                       type="button"
                       className="list-row-main list-row-open"
-                      onClick={() => onShowReport(report.results)}
+                      onClick={() => onShowReport(report.results, report.language)}
                     >
                       <span className="list-row-title">{report.name}</span>
                       <span className="list-row-meta">

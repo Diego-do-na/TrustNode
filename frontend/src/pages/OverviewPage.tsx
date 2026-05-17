@@ -3,6 +3,7 @@ import { TrustHero } from "../components/TrustHero";
 import { StandardsCard } from "../components/StandardsCard";
 import { FindingsCard } from "../components/FindingsCard";
 import { ComplianceHeatmap } from "../components/ComplianceHeatmap";
+import { ExecutiveSummary } from "../components/ExecutiveSummary";
 import { OverviewEmptyState } from "../components/OverviewEmptyState";
 import { ReportPreviewModal } from "../components/ReportPreviewModal";
 import type { AuditResponse } from "../api/client";
@@ -10,12 +11,14 @@ import type { AuditResponse } from "../api/client";
 interface OverviewPageProps {
   auditResults: AuditResponse[];
   lastAuditAt: Date | null;
+  reportLanguage: string;
   onOpenUpload: () => void;
 }
 
-export function OverviewPage({ auditResults, lastAuditAt, onOpenUpload }: OverviewPageProps) {
+export function OverviewPage({ auditResults, lastAuditAt, reportLanguage, onOpenUpload }: OverviewPageProps) {
   const hasData = auditResults.length > 0;
   const [previewOpen, setPreviewOpen] = useState(false);
+  const [executiveSummary, setExecutiveSummary] = useState<string | null>(null);
 
   if (!hasData) {
     return <OverviewEmptyState onStartAudit={onOpenUpload} />;
@@ -54,10 +57,19 @@ export function OverviewPage({ auditResults, lastAuditAt, onOpenUpload }: Overvi
         <FindingsCard auditResults={auditResults} />
       </div>
 
+      <div className="overview-enter-item overview-enter-item--findings">
+        <ExecutiveSummary
+          auditResults={auditResults}
+          language={reportLanguage}
+          onSummaryChange={setExecutiveSummary}
+        />
+      </div>
+
       <ReportPreviewModal
         open={previewOpen}
         auditResults={auditResults}
         lastAuditAt={lastAuditAt}
+        executiveSummary={executiveSummary}
         onClose={() => setPreviewOpen(false)}
       />
     </div>

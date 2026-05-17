@@ -69,6 +69,68 @@ export async function ingestFiles(files: File[]): Promise<IngestResponse> {
   return res.json();
 }
 
+export interface SummaryRequest {
+  standard_audited: string;
+  global_score_percentage: number;
+  results: AuditResult[];
+  language?: string;
+}
+
+export interface SummaryResponse {
+  summary: string;
+}
+
+export interface ExportFinding {
+  key: string;
+  standard: string;
+  control_id: string;
+  status: string;
+  evidence_found: string;
+  gaps: string;
+  recommendation: string;
+  risk_level: string;
+}
+
+export interface ExportPdfRequest {
+  standard_name: string;
+  compliance_score: number;
+  findings: ExportFinding[];
+  executive_summary?: string | null;
+  generated_at?: string | null;
+}
+
+export async function exportReportPdf(payload: ExportPdfRequest): Promise<Blob> {
+  const res = await fetch(`${API_BASE}/api/v1/export/pdf`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    let detail = `Export failed: ${res.status}`;
+    try {
+      const body = (await res.json()) as Record<string, string>;
+      if (body.detail) detail = body.detail;
+    } catch {
+      /* response wasn't JSON — keep the default detail */
+    }
+    throw new Error(detail);
+  }
+  return res.blob();
+}
+
+export async function generateSummary(payload: SummaryRequest): Promise<SummaryResponse> {
+  const res = await fetch(`${API_BASE}/api/v1/summary`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify(payload),
+  });
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({})) as Record<string, string>;
+    throw new Error(body.detail ?? `Summary failed: ${res.status}`);
+  }
+  return res.json();
+}
+
 export async function runAudit(payload: AuditRequest): Promise<AuditResponse> {
   const res = await fetch(`${API_BASE}/api/v1/audit`, {
     method: "POST",

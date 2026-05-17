@@ -18,6 +18,7 @@ export default function App() {
   const [systemStatus, setSystemStatus] = useState<StatusResponse | null>(null);
   const [auditResults, setAuditResults] = useState<AuditResponse[]>([]);
   const [lastAuditAt, setLastAuditAt] = useState<Date | null>(null);
+  const [reportLanguage, setReportLanguage] = useState<string>("English");
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -51,11 +52,13 @@ export default function App() {
                 tab={activeTab}
                 auditResults={auditResults}
                 lastAuditAt={lastAuditAt}
+                reportLanguage={reportLanguage}
                 onNavigate={setActiveTab}
                 onOpenUpload={() => setUploadOpen(true)}
-                onShowReport={(results) => {
+                onShowReport={(results, language) => {
                   setAuditResults(results);
                   setLastAuditAt(new Date());
+                  if (language) setReportLanguage(language);
                   setActiveTab("overview");
                 }}
               />
@@ -66,9 +69,10 @@ export default function App() {
         <UploadModal
           open={uploadOpen}
           onClose={() => setUploadOpen(false)}
-          onAuditComplete={(results) => {
+          onAuditComplete={(results, language) => {
             setAuditResults(results);
             setLastAuditAt(new Date());
+            setReportLanguage(language);
             setUploadOpen(false);
             setActiveTab("overview");
           }}

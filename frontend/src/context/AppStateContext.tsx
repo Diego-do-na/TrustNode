@@ -30,6 +30,7 @@ export interface StoredReport {
   createdAt: number;     // epoch ms
   results: AuditResponse[];
   documentNames: string[];
+  language?: string;
 }
 
 export interface CustomStandard {

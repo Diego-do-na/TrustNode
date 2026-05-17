@@ -8,7 +8,7 @@ import type { AuditRequest, AuditResponse } from "../api/client";
 interface UploadModalProps {
   open: boolean;
   onClose: () => void;
-  onAuditComplete: (results: AuditResponse[]) => void;
+  onAuditComplete: (results: AuditResponse[], language: string) => void;
 }
 
 type Phase = "idle" | "clearing" | "ingesting" | "auditing" | "error";
@@ -151,9 +151,10 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
         score: avgScore,
         results,
         documentNames,
+        language: reportLang,
       });
 
-      onAuditComplete(results);
+      onAuditComplete(results, reportLang);
     } catch (err: unknown) {
       const msg = err instanceof Error ? err.message : "An unexpected error occurred.";
       setError(msg);

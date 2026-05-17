@@ -25,17 +25,21 @@ from fastapi import (
 )
 from fastapi.concurrency import run_in_threadpool
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import JSONResponse
+from fastapi.responses import JSONResponse, Response
 
 # Team modules. These signatures are the CONTRACT — notify the team if they change.
 from ingestion import ingest_pdf, get_collection_stats, clear_collection
-from evaluator import run_audit, check_llm_alive
+from evaluator import run_audit, check_llm_alive, generate_executive_summary
+from latex_report import render_pdf
 from schemas import (
     AuditRequest,
     AuditResponse,
     IngestResponse,
     StatusResponse,
     ErrorResponse,
+    SummaryRequest,
+    SummaryResponse,
+    ExportPdfRequest,
 )
 
 
@@ -294,6 +298,80 @@ async def audit_endpoint(payload: AuditRequest) -> AuditResponse:
 
     logger.info("Audit complete: %d/%d controls evaluated.", len(result.findings), len(payload.controls))
     return result
+
+
+@app.post(
+    "/api/v1/summary",
+    response_model=SummaryResponse,
+    tags=["pipeline"],
+    summary="Generate an AI executive summary from a finished audit report.",
+)
+async def summary_endpoint(payload: SummaryRequest) -> SummaryResponse:
+    """
+    Takes the results of a completed audit and asks Llama 3.1 to produce a
+    senior-auditor-style executive summary (max 3 paragraphs, plain text).
+    """
+    if not payload.results:
+        raise HTTPException(status_code=400, detail="No audit results provided.")
+
+    logger.info(
+        "Summary requested: standard=%r, findings=%d, score=%.1f",
+        payload.standard_audited,
+        len(payload.results),
+        payload.global_score_percentage,
+    )
+
+    try:
+        text = await run_in_threadpool(
+            generate_executive_summary,
+            payload.standard_audited,
+            payload.global_score_percentage,
+            [r.model_dump() for r in payload.results],
+            payload.language,
+        )
+    except RuntimeError as e:
+        logger.exception("Summary generation failed")
+        raise HTTPException(status_code=502, detail=str(e)) from e
+
+    return SummaryResponse(summary=text)
+
+
+@app.post(
+    "/api/v1/export/pdf",
+    tags=["pipeline"],
+    summary="Compile the current audit into an institutional PDF report (LaTeX).",
+    responses={
+        200: {
+            "content": {"application/pdf": {}},
+            "description": "Compiled PDF report stream.",
+        },
+    },
+)
+async def export_pdf_endpoint(payload: ExportPdfRequest) -> Response:
+    """
+    Builds a LaTeX source from the request, compiles it via `pdflatex`, and
+    returns the resulting PDF as an attachment.
+    """
+    logger.info(
+        "Export PDF requested: standard=%r, findings=%d, score=%.1f",
+        payload.standard_name,
+        len(payload.findings),
+        payload.compliance_score,
+    )
+
+    try:
+        pdf_bytes = await run_in_threadpool(render_pdf, payload)
+    except RuntimeError as e:
+        logger.exception("LaTeX compilation failed")
+        raise HTTPException(status_code=502, detail=str(e)) from e
+
+    return Response(
+        content=pdf_bytes,
+        media_type="application/pdf",
+        headers={
+            "Content-Disposition": 'attachment; filename="TrustNode_Audit_Report.pdf"',
+        },
+    )
 
 
 # ---------------------------------------------------------------------------
