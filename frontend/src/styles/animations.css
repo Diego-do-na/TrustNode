@@ -189,16 +189,16 @@
   animation-delay: 0.04s;
 }
 
-.overview-enter > .overview-stats-strip {
-  animation-delay: 0.1s;
-}
-
 .overview-enter > .overview-enter-item--hero {
   animation-delay: 0.16s;
 }
 
+.overview-enter > .overview-enter-item--heatmap {
+  animation-delay: 0.22s;
+}
+
 .overview-enter > .overview-enter-item--findings {
-  animation-delay: 0.24s;
+  animation-delay: 0.3s;
 }
 
 .overview-empty {

@@ -2,8 +2,8 @@ import { useState } from "react";
 import { TrustHero } from "../components/TrustHero";
 import { StandardsCard } from "../components/StandardsCard";
 import { FindingsCard } from "../components/FindingsCard";
+import { ComplianceHeatmap } from "../components/ComplianceHeatmap";
 import { OverviewEmptyState } from "../components/OverviewEmptyState";
-import { OverviewStatsStrip } from "../components/OverviewStatsStrip";
 import { ReportPreviewModal } from "../components/ReportPreviewModal";
 import type { AuditResponse } from "../api/client";
 
@@ -41,11 +41,13 @@ export function OverviewPage({ auditResults, lastAuditAt, onOpenUpload }: Overvi
         </button>
       </div>
 
-      <OverviewStatsStrip auditResults={auditResults} lastAuditAt={lastAuditAt} />
-
       <div className="hero-row overview-enter-item overview-enter-item--hero">
         <TrustHero auditResults={auditResults} />
         <StandardsCard auditResults={auditResults} />
+      </div>
+
+      <div className="overview-enter-item overview-enter-item--heatmap">
+        <ComplianceHeatmap auditResults={auditResults} />
       </div>
 
       <div className="overview-enter-item overview-enter-item--findings">

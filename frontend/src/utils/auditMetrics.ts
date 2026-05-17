@@ -32,10 +32,6 @@ export function flattenFindings(auditResults: AuditResponse[]) {
   );
 }
 
-export function openIssueCount(auditResults: AuditResponse[]): number {
-  return flattenFindings(auditResults).filter((f) => f.severity !== "pass").length;
-}
-
 export function controlProgress(result: AuditResponse): { assessed: number; total: number } {
   const assessed = result.findings.length;
   const defined = STANDARD_DEFINITIONS[result.standard_audited]?.controls.length;

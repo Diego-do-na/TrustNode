@@ -1,4 +1,5 @@
 import { useCallback, useEffect } from "react";
+import { createPortal } from "react-dom";
 import type { AuditResponse } from "../api/client";
 import { LogoMark } from "./Logo";
 import { averageTrustScore, flattenFindings, scoreLevel } from "../utils/auditMetrics";
@@ -46,7 +47,7 @@ export function ReportPreviewModal({ open, auditResults, lastAuditAt, onClose }:
     .slice(0, 6);
   const generated = lastAuditAt?.toLocaleString() ?? new Date().toLocaleString();
 
-  return (
+  return createPortal(
     <div className="report-preview-bg print:hidden" onClick={handleBackdrop} role="presentation">
       <div className="report-preview-dialog" role="dialog" aria-modal="true" aria-labelledby="report-preview-title">
         <button type="button" className="modal-close" onClick={onClose} aria-label="Close">
@@ -138,6 +139,7 @@ export function ReportPreviewModal({ open, auditResults, lastAuditAt, onClose }:
           </button>
         </footer>
       </div>
-    </div>
+    </div>,
+    document.body,
   );
 }

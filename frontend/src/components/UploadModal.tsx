@@ -307,7 +307,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
           value={reportLang}
           onChange={(e) => setReportLang(e.target.value)}
           disabled={isLoading}
-          className="bg-zinc-900 border border-zinc-700 text-zinc-300 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2 cursor-pointer"
+          className="modal-select"
         >
           <option value="English">Report in English</option>
           <option value="Spanish">Reporte en Español</option>
