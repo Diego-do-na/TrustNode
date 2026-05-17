@@ -188,7 +188,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
       : phase === "ingesting"
         ? `Ingesting ${totalDocs} file${totalDocs > 1 ? "s" : ""}…`
         : phase === "auditing"
-          ? `Analysing ${auditProgress.standard}… (${auditProgress.current}/${auditProgress.total})`
+          ? `Analyzing ${auditProgress.standard}… (${auditProgress.current}/${auditProgress.total})`
           : null;
 
   return (
@@ -204,7 +204,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
           ✕
         </button>
         <h2 id="upload-modal-title" className="modal-title">
-          Analyse Documents
+          Analyze Documents
         </h2>
         <p className="modal-sub">
           Upload new files or reuse documents from past sessions, then pick the standards to assess

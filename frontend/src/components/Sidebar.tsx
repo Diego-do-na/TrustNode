@@ -1,5 +1,5 @@
 import { Logo } from "./Logo";
-import { AnalyseCta } from "./AnalyseCta";
+import { AnalyzeCta } from "./AnalyzeCta";
 import {
   DocumentsIcon,
   OverviewIcon,
@@ -38,7 +38,7 @@ export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive, isO
     <aside className="sidebar print:hidden">
       <Logo />
 
-      <AnalyseCta onClick={onOpenUpload} />
+      <AnalyzeCta onClick={onOpenUpload} />
 
       <span className="nav-label">Main</span>
       {NAV_ITEMS.map(({ id, label }) => {
@@ -51,9 +51,10 @@ export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive, isO
             className={`nav-item${isActive ? " active" : ""}`}
             onClick={() => onTabChange(id)}
             aria-current={isActive ? "page" : undefined}
+            title={label}
           >
             <Icon />
-            {label}
+            <span className="nav-item-label">{label}</span>
           </button>
         );
       })}

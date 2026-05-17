@@ -111,7 +111,7 @@ export function SettingsPage() {
         </header>
         <p className="settings-hint">
           Choose which frameworks TrustNode evaluates by default. Custom JSON cartridges loaded
-          here become selectable in the Analyse modal.
+          here become selectable in the Analyze modal.
         </p>
 
         <input

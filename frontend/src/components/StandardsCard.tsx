@@ -27,7 +27,11 @@ export function StandardsCard({ auditResults }: StandardsCardProps) {
             const level = scoreLevel(result.global_score_percentage);
             const domain = STANDARD_DEFINITIONS[result.standard_audited]?.domain ?? "";
             return (
-              <button key={result.standard_audited} type="button" className="standard-pill">
+              <button
+                key={result.standard_audited}
+                type="button"
+                className={`standard-pill standard-pill--${level}`}
+              >
                 <div className="standard-pill-body">
                   <div className="standard-name">
                     <span className={`std-dot ${level}`} />
