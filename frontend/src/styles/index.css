@@ -68,6 +68,11 @@ button {
   display: grid;
   grid-template-columns: 256px 1fr;
   min-height: 100vh;
+  transition: grid-template-columns 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.shell.sidebar-closed {
+  grid-template-columns: 64px 1fr;
 }
 
 .content-column {
@@ -89,7 +94,44 @@ button {
   position: sticky;
   top: 0;
   height: 100vh;
-  transition: background 0.3s, border-color 0.3s;
+  transition: padding 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.28s ease,
+              border-color 0.28s ease;
+  overflow: hidden;
+}
+
+.shell.sidebar-closed .sidebar {
+  padding: 26px 6px;
+}
+
+.shell.sidebar-closed .logo-text,
+.shell.sidebar-closed .nav-label,
+.shell.sidebar-closed .analyse-cta-sub,
+.shell.sidebar-closed .theme-toggle-label,
+.shell.sidebar-closed .status-label {
+  opacity: 0;
+  pointer-events: none;
+}
+
+.shell.sidebar-closed .analyse-cta {
+  gap: 0;
+  padding: 10px;
+}
+
+.shell.sidebar-closed .analyse-cta-top {
+  flex-direction: column;
+  align-items: center;
+  gap: 0;
+}
+
+.shell.sidebar-closed .analyse-cta-title {
+  font-size: 0;
+}
+
+.shell.sidebar-closed .analyse-cta-icon {
+  width: 36px;
+  height: 36px;
+  margin: 0;
 }
 
 .logo {
@@ -98,6 +140,11 @@ button {
   gap: 10px;
   padding: 0 8px;
   margin-bottom: 30px;
+  transition: margin-bottom 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.shell.sidebar-closed .logo {
+  margin-bottom: 14px;
 }
 
 .logo-mark {
@@ -122,7 +169,8 @@ button {
   font-weight: 800;
   letter-spacing: -0.3px;
   color: var(--text-1);
-  transition: color 0.3s;
+  transition: opacity 0.24s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              color 0.28s ease;
 }
 
 .logo-text span {
@@ -145,22 +193,30 @@ button {
   cursor: pointer;
   text-align: left;
   font-family: inherit;
-  transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1), opacity 0.15s ease,
-    box-shadow 0.18s ease;
-  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.18);
+  transition: transform 0.22s cubic-bezier(0.34, 1.56, 0.64, 1),
+              opacity 0.20s ease,
+              box-shadow 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              gap 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              padding 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  box-shadow: 0 6px 28px rgba(0, 0, 0, 0.22);
 }
 
 [data-theme="light"] .analyse-cta {
-  box-shadow: 0 4px 20px rgba(20, 18, 16, 0.12);
+  box-shadow: 0 6px 24px rgba(20, 18, 16, 0.16);
 }
 
 .analyse-cta:hover {
-  transform: translateY(-2px);
-  opacity: 0.92;
+  transform: translateY(-3px);
+  opacity: 0.94;
+  box-shadow: 0 10px 32px rgba(0, 0, 0, 0.26);
+}
+
+[data-theme="light"] .analyse-cta:hover {
+  box-shadow: 0 10px 28px rgba(20, 18, 16, 0.20);
 }
 
 .analyse-cta:active {
-  transform: translateY(0);
+  transform: translateY(-1px);
 }
 
 .analyse-cta-top {
@@ -222,7 +278,10 @@ button {
   font-family: inherit;
   color: var(--text-2);
   background: transparent;
-  transition: all 0.15s ease;
+  transition: all 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.18s ease,
+              color 0.18s ease,
+              border-color 0.18s ease;
   text-decoration: none;
   border: 1px solid transparent;
   position: relative;
@@ -232,12 +291,14 @@ button {
   background: var(--glass-hover);
   color: var(--text-1);
   border-color: var(--glass-border);
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.05);
 }
 
 .nav-item.active {
   background: var(--active-bg);
   color: var(--text-1);
   border-color: var(--glass-border);
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.08);
 }
 
 .nav-item.active::before {
@@ -286,6 +347,11 @@ button {
   display: flex;
   flex-direction: column;
   gap: 8px;
+  transition: gap 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.shell.sidebar-closed .sidebar-bottom {
+  gap: 6px;
 }
 
 .theme-toggle {
@@ -297,21 +363,57 @@ button {
   cursor: pointer;
   border: 1px solid var(--glass-border);
   background: var(--glass);
-  transition: all 0.15s ease;
+  transition: all 0.20s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.20s ease,
+              box-shadow 0.20s ease;
   user-select: none;
   width: 100%;
   text-align: left;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .theme-toggle:hover {
   background: var(--glass-hover);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.10);
 }
 
 .theme-toggle-label {
   font-size: 12px;
   font-weight: 500;
   color: var(--text-2);
-  transition: color 0.3s;
+  transition: opacity 0.24s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              color 0.28s ease;
+}
+
+.sidebar-toggle {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 9px 10px;
+  border-radius: 12px;
+  cursor: pointer;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+  color: var(--text-2);
+  transition: all 0.20s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.20s ease,
+              color 0.20s ease,
+              box-shadow 0.20s ease;
+  user-select: none;
+  font-size: 14px;
+  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+}
+
+.sidebar-toggle:hover {
+  background: var(--glass-hover);
+  color: var(--text-1);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.10);
+}
+
+.sidebar-toggle-icon {
+  display: inline-block;
+  transition: transform 0.24s cubic-bezier(0.34, 1.56, 0.64, 1);
 }
 
 .toggle-track {
@@ -378,11 +480,20 @@ button {
 .btn-primary {
   background: var(--text-1);
   color: var(--bg);
-  transition: background 0.3s, color 0.3s;
+  transition: all 0.22s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              box-shadow 0.22s ease;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.14);
+  position: relative;
+  overflow: hidden;
 }
 
 .btn-primary:hover {
-  opacity: 0.85;
+  transform: translateY(-2px);
+  box-shadow: 0 7px 18px rgba(0, 0, 0, 0.20);
+}
+
+.btn-primary:active {
+  transform: translateY(0);
 }
 
 .btn-ghost {
@@ -395,12 +506,17 @@ button {
   padding: 8px 17px;
   border-radius: 999px;
   cursor: pointer;
-  transition: all 0.15s;
+  transition: all 0.20s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.20s ease,
+              box-shadow 0.20s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
 }
 
 .btn-ghost:hover {
   color: var(--text-1);
   background: var(--glass-hover);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.10);
+  transform: translateY(-1px);
 }
 
 .btn-sm {
@@ -429,7 +545,16 @@ button {
   border-radius: 22px;
   padding: 26px 22px;
   backdrop-filter: blur(14px);
-  transition: background 0.3s, border-color 0.3s;
+  transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.28s ease,
+              border-color 0.28s ease,
+              box-shadow 0.28s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.trust-hero:hover {
+  border-color: var(--glass-border);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
 .score-label {
@@ -495,7 +620,15 @@ button {
   border-radius: 22px;
   padding: 20px 20px 16px;
   backdrop-filter: blur(14px);
-  transition: background 0.3s, border-color 0.3s;
+  transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.28s ease,
+              border-color 0.28s ease,
+              box-shadow 0.28s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.standards-card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
 .card-header {
@@ -532,14 +665,20 @@ button {
   border: 1px solid var(--glass-border);
   background: var(--std-pill-bg);
   cursor: pointer;
-  transition: all 0.15s ease;
+  transition: all 0.20s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.20s ease,
+              border-color 0.20s ease,
+              transform 0.20s ease,
+              box-shadow 0.20s ease;
   text-align: left;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
 }
 
 .standard-pill:hover {
   background: var(--glass-hover);
-  border-color: var(--text-3);
-  transform: translateY(-1px);
+  border-color: var(--text-2);
+  transform: translateY(-3px);
+  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.10);
 }
 
 .standard-pill-body {
@@ -615,7 +754,15 @@ button {
   border-radius: 22px;
   padding: 20px 22px;
   backdrop-filter: blur(14px);
-  transition: background 0.3s, border-color 0.3s;
+  transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.28s ease,
+              border-color 0.28s ease,
+              box-shadow 0.28s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.findings-card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
 .finding-item {
@@ -640,19 +787,23 @@ button {
   text-align: left;
   font: inherit;
   color: inherit;
-  transition: opacity 0.13s;
+  transition: opacity 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  border-radius: 8px;
+  margin: 0 -4px;
+  padding: 12px 4px;
 }
 
 .finding-item:first-child .finding-row {
-  padding-top: 0;
+  padding-top: 12px;
 }
 
 .finding-item:last-child .finding-row {
-  padding-bottom: 0;
+  padding-bottom: 12px;
 }
 
 .finding-row:hover {
-  opacity: 0.78;
+  opacity: 0.86;
+  background: rgba(255, 255, 255, 0.02);
 }
 
 .finding-caret {
@@ -754,12 +905,27 @@ button {
 @keyframes findingExpand {
   from {
     opacity: 0;
-    transform: translateY(-4px);
+    transform: translateY(-6px);
   }
   to {
     opacity: 1;
     transform: translateY(0);
   }
+}
+
+@keyframes pageEnter {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.page-enter {
+  animation: pageEnter 0.34s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 }
 
 .f-dot {
@@ -871,19 +1037,47 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
+  animation: modalFadeIn 0.26s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes modalFadeIn {
+  from {
+    opacity: 0;
+    backdrop-filter: blur(0px);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(10px);
+  }
 }
 
 .modal {
   background: var(--modal-bg);
   border: 1px solid var(--glass-border);
-  border-radius: 22px;
-  padding: 28px;
+  border-radius: 24px;
+  padding: 32px;
   width: 520px;
   max-width: 92vw;
   max-height: 92vh;
   overflow-y: auto;
   position: relative;
-  transition: background 0.3s;
+  transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.28s ease,
+              box-shadow 0.28s ease;
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.24),
+              0 0 1px rgba(0, 0, 0, 0.15);
+  animation: modalScaleIn 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+@keyframes modalScaleIn {
+  from {
+    opacity: 0;
+    transform: scale(0.95) translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1) translateY(0);
+  }
 }
 
 .modal-title {
@@ -907,8 +1101,8 @@ button {
   position: absolute;
   top: 16px;
   right: 16px;
-  width: 26px;
-  height: 26px;
+  width: 32px;
+  height: 32px;
   border-radius: 50%;
   background: var(--glass);
   border: 1px solid var(--glass-border);
@@ -917,13 +1111,20 @@ button {
   display: flex;
   align-items: center;
   justify-content: center;
-  font-size: 11px;
-  transition: all 0.13s;
+  font-size: 16px;
+  font-weight: 500;
+  transition: all 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.18s ease,
+              color 0.18s ease,
+              box-shadow 0.18s ease;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .modal-close:hover {
   color: var(--text-1);
   background: var(--glass-hover);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.12);
+  transform: rotate(90deg);
 }
 
 .modal-drop {
@@ -932,15 +1133,21 @@ button {
   padding: 32px;
   text-align: center;
   cursor: pointer;
-  transition: all 0.16s;
+  transition: all 0.20s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.20s ease,
+              border-color 0.20s ease,
+              box-shadow 0.20s ease;
   margin-bottom: 16px;
   width: 100%;
   background: transparent;
+  box-shadow: inset 0 1px 2px rgba(255, 255, 255, 0.02);
 }
 
 .modal-drop:hover {
-  border-color: var(--text-2);
-  background: var(--glass);
+  border-color: var(--text-1);
+  background: var(--glass-hover);
+  box-shadow: inset 0 1px 3px rgba(255, 255, 255, 0.06),
+              0 2px 6px rgba(0, 0, 0, 0.06);
 }
 
 .modal-drop-icon {
@@ -986,21 +1193,28 @@ button {
   font-size: 11px;
   font-weight: 600;
   cursor: pointer;
-  transition: all 0.13s;
+  transition: all 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.18s ease,
+              color 0.18s ease,
+              border-color 0.18s ease,
+              box-shadow 0.18s ease;
   background: transparent;
   color: var(--text-2);
   font-family: "Syne", sans-serif;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .chip.selected {
   background: var(--chip-sel-bg);
   color: var(--chip-sel-txt);
   border-color: var(--chip-sel-bg);
+  box-shadow: 0 3px 8px rgba(0, 0, 0, 0.12);
 }
 
 .chip:not(.selected):hover {
   border-color: var(--text-2);
   color: var(--text-1);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08);
 }
 
 .modal-footer {
@@ -1030,7 +1244,16 @@ button {
   display: flex;
   flex-direction: column;
   gap: 6px;
-  transition: background 0.3s, border-color 0.3s;
+  transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.28s ease,
+              border-color 0.28s ease,
+              box-shadow 0.28s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+}
+
+.stat-pill:hover {
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.10);
+  transform: translateY(-1px);
 }
 
 .stat-pill-value {
@@ -1055,7 +1278,15 @@ button {
   border-radius: 22px;
   padding: 20px 22px;
   backdrop-filter: blur(14px);
-  transition: background 0.3s, border-color 0.3s;
+  transition: all 0.28s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              background 0.28s ease,
+              border-color 0.28s ease,
+              box-shadow 0.28s ease;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.08);
+}
+
+.glass-card:hover {
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.12);
 }
 
 .list-card .card-header {
@@ -1314,13 +1545,19 @@ button {
   font-family: "Syne", sans-serif;
   font-size: 12px;
   font-weight: 500;
-  transition: border-color 0.15s, background 0.15s;
+  transition: all 0.18s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+              border-color 0.18s ease,
+              background 0.18s ease,
+              box-shadow 0.18s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
 }
 
 .settings-input:focus {
   outline: none;
-  border-color: var(--text-3);
+  border-color: var(--text-2);
   background: var(--glass-hover);
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.08),
+              inset 0 1px 2px rgba(255, 255, 255, 0.05);
 }
 
 .toggle-pill {

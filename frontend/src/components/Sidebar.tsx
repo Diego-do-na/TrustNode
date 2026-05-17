@@ -22,9 +22,11 @@ interface SidebarProps {
   onTabChange: (tab: NavId) => void;
   onOpenUpload: () => void;
   ollamaAlive: boolean | null;
+  isOpen: boolean;
+  onToggle: () => void;
 }
 
-export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive, isOpen, onToggle }: SidebarProps) {
   const { theme, toggleTheme, themeLabel } = useTheme();
 
   const statusClass =
@@ -72,6 +74,16 @@ export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive }: S
           <span className="toggle-track">
             <span className="toggle-thumb" />
           </span>
+        </button>
+
+        <button
+          type="button"
+          className="sidebar-toggle"
+          onClick={onToggle}
+          aria-label={isOpen ? "Collapse sidebar" : "Expand sidebar"}
+          title={isOpen ? "Collapse sidebar" : "Expand sidebar"}
+        >
+          <span className="sidebar-toggle-icon">{isOpen ? "⟨" : "⟩"}</span>
         </button>
       </section>
     </aside>

@@ -27,6 +27,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(["ISO 27001", "ISO 9001"]),
   );
+  const [reportLang, setReportLang] = useState("English");
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [auditProgress, setAuditProgress] = useState({ current: 0, total: 0, standard: "" });
@@ -132,7 +133,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
         setAuditProgress({ current: i + 1, total: standardNames.length, standard: name });
         const def = standardDefinitionFor(name);
         if (!def) continue;
-        const result = await runAudit(def);
+        const result = await runAudit({ ...def, language: reportLang });
         results.push(result);
       }
 
@@ -300,6 +301,20 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
             </button>
           ))}
         </div>
+
+        <div className="modal-section-label">Report language</div>
+        <select
+          value={reportLang}
+          onChange={(e) => setReportLang(e.target.value)}
+          disabled={isLoading}
+          className="bg-zinc-900 border border-zinc-700 text-zinc-300 text-sm rounded-lg focus:ring-emerald-500 focus:border-emerald-500 block w-full p-2 cursor-pointer"
+        >
+          <option value="English">Report in English</option>
+          <option value="Spanish">Reporte en Español</option>
+          <option value="French">Rapport en Français</option>
+          <option value="German">Bericht auf Deutsch</option>
+          <option value="Portuguese">Relatório em Português</option>
+        </select>
 
         {error && <div className="modal-error">{error}</div>}
 

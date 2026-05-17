@@ -17,6 +17,7 @@ export default function App() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [systemStatus, setSystemStatus] = useState<StatusResponse | null>(null);
   const [auditResults, setAuditResults] = useState<AuditResponse[]>([]);
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
     fetchStatus()
@@ -32,12 +33,14 @@ export default function App() {
   return (
     <ThemeProvider>
       <AppStateProvider>
-        <section className="shell print:block print:bg-white print:text-black print:p-0 print:m-0">
+        <section className={`shell print:block print:bg-white print:text-black print:p-0 print:m-0${sidebarOpen ? " sidebar-open" : " sidebar-closed"}`}>
           <Sidebar
             activeTab={activeTab}
             onTabChange={setActiveTab}
             onOpenUpload={() => setUploadOpen(true)}
             ollamaAlive={systemStatus?.ollama_alive ?? null}
+            isOpen={sidebarOpen}
+            onToggle={() => setSidebarOpen(!sidebarOpen)}
           />
           <section className="content-column print:bg-white print:text-black print:p-0 print:m-0">
             <AmbientBackground />

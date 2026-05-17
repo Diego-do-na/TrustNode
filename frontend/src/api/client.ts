@@ -19,6 +19,7 @@ export interface AuditRequest {
   standard_name: string;
   domain: string;
   controls: ControlSchema[];
+  language?: string;
 }
 
 export interface AuditResult {
