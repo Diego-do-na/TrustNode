@@ -8,17 +8,20 @@ import { SettingsPage } from "./SettingsPage";
 interface PageContentProps {
   tab: NavId;
   auditResults: AuditResponse[];
+  onNavigate: (tab: NavId) => void;
+  onShowReport: (results: AuditResponse[]) => void;
 }
 
-export function PageContent({ tab, auditResults }: PageContentProps) {
+export function PageContent({ tab, auditResults, onNavigate, onShowReport }: PageContentProps) {
   switch (tab) {
+    case "overview":
+      return <OverviewPage auditResults={auditResults} />;
     case "reports":
-      return <ReportsPage />;
+      return <ReportsPage onShowReport={onShowReport} />;
     case "documents":
-      return <DocumentsPage />;
+      return <DocumentsPage onOpenUpload={() => onNavigate("overview")} />;
     case "settings":
       return <SettingsPage />;
-    case "overview":
     default:
       return <OverviewPage auditResults={auditResults} />;
   }

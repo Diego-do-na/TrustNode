@@ -617,29 +617,143 @@ button {
 }
 
 .finding-item {
-  display: flex;
-  gap: 12px;
+  display: block;
   width: 100%;
-  padding: 12px 0;
-  border: none;
   border-bottom: 1px solid var(--glass-border);
-  background: transparent;
-  cursor: pointer;
-  transition: opacity 0.13s;
-  text-align: left;
 }
 
 .finding-item:last-child {
   border-bottom: none;
-  padding-bottom: 0;
 }
 
-.finding-item:first-child {
+.finding-row {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 12px 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  transition: opacity 0.13s;
+}
+
+.finding-item:first-child .finding-row {
   padding-top: 0;
 }
 
-.finding-item:hover {
-  opacity: 0.7;
+.finding-item:last-child .finding-row {
+  padding-bottom: 0;
+}
+
+.finding-row:hover {
+  opacity: 0.78;
+}
+
+.finding-caret {
+  margin-left: auto;
+  font-size: 18px;
+  color: var(--text-3);
+  transform: rotate(90deg);
+  transition: transform 0.18s ease, color 0.18s ease;
+  flex-shrink: 0;
+  line-height: 1;
+  padding-top: 2px;
+}
+
+.finding-caret.open {
+  transform: rotate(-90deg);
+  color: var(--text-1);
+}
+
+.finding-item.is-open .finding-title {
+  white-space: normal;
+  overflow: visible;
+  text-overflow: clip;
+}
+
+.finding-detail {
+  padding: 4px 0 16px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation: findingExpand 0.22s ease both;
+}
+
+.finding-section {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.finding-section-title {
+  margin: 0;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.8px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.finding-section-body {
+  margin: 0;
+  font-size: 12.5px;
+  line-height: 1.55;
+  color: var(--text-2);
+}
+
+.evidence-snippet {
+  position: relative;
+  margin: 0;
+  padding: 28px 14px 14px;
+  border-radius: 12px;
+  background: #0d1117;
+  color: #c9d1d9;
+  font-family: "DM Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11.5px;
+  line-height: 1.55;
+  white-space: pre-wrap;
+  word-break: break-word;
+  border: 1px solid rgba(255, 255, 255, 0.06);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.02);
+  overflow-x: auto;
+}
+
+.evidence-snippet code {
+  font: inherit;
+  color: inherit;
+  background: transparent;
+  display: block;
+}
+
+.evidence-snippet-tag {
+  position: absolute;
+  top: 8px;
+  left: 12px;
+  font-size: 9px;
+  font-weight: 700;
+  letter-spacing: 0.6px;
+  text-transform: uppercase;
+  color: #6e7681;
+}
+
+[data-theme="light"] .evidence-snippet {
+  background: #161b22;
+  color: #e6edf3;
+}
+
+@keyframes findingExpand {
+  from {
+    opacity: 0;
+    transform: translateY(-4px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
 .f-dot {
@@ -758,8 +872,10 @@ button {
   border: 1px solid var(--glass-border);
   border-radius: 22px;
   padding: 28px;
-  width: 490px;
+  width: 520px;
   max-width: 92vw;
+  max-height: 92vh;
+  overflow-y: auto;
   position: relative;
   transition: background 0.3s;
 }
@@ -1006,6 +1122,21 @@ button {
   flex-shrink: 0;
 }
 
+.list-row-open {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+  padding: 0;
+  transition: opacity 0.13s;
+}
+
+.list-row-open:hover {
+  opacity: 0.78;
+}
+
 .list-row-score.high {
   color: #4caf7d;
 }
@@ -1065,6 +1196,63 @@ button {
 
 .settings-chips {
   margin-bottom: 0;
+}
+
+.settings-banner {
+  margin: 10px 0 14px;
+  padding: 10px 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.4;
+  border: 1px solid;
+}
+
+.settings-banner.error {
+  background: rgba(217, 79, 79, 0.08);
+  border-color: rgba(217, 79, 79, 0.3);
+  color: #d94f4f;
+}
+
+.settings-banner.success {
+  background: rgba(76, 175, 125, 0.08);
+  border-color: rgba(76, 175, 125, 0.32);
+  color: #4caf7d;
+}
+
+.custom-standards-list {
+  list-style: none;
+  margin: 16px 0 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.custom-standard-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--glass-border);
+  background: var(--glass);
+}
+
+.custom-standard-name {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 12.5px;
+  font-weight: 600;
+  color: var(--text-1);
+}
+
+.custom-standard-name small {
+  font-size: 10px;
+  font-weight: 500;
+  color: var(--text-3);
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
 }
 
 .settings-rows {
@@ -1329,6 +1517,60 @@ button {
 
 .file-item-remove:hover {
   color: #e05252;
+}
+
+.doc-checkbox-list {
+  list-style: none;
+  margin: 0 0 16px;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  max-height: 180px;
+  overflow-y: auto;
+}
+
+.doc-checkbox {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 7px 10px;
+  border: 1px solid var(--glass-border);
+  border-radius: 8px;
+  background: var(--glass);
+  font-size: 12px;
+  cursor: pointer;
+  transition: border-color 0.15s, background 0.15s;
+}
+
+.doc-checkbox:hover {
+  border-color: var(--text-2);
+}
+
+.doc-checkbox.checked {
+  border-color: var(--text-1);
+  background: var(--glass-hover);
+}
+
+.doc-checkbox input[type="checkbox"] {
+  margin: 0;
+  cursor: pointer;
+  accent-color: var(--text-1);
+}
+
+.doc-checkbox-name {
+  flex: 1;
+  color: var(--text-1);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.doc-checkbox-size {
+  color: var(--text-3);
+  flex-shrink: 0;
+  font-family: "DM Mono", monospace;
+  font-size: 10.5px;
 }
 
 /* ── EMPTY STATE ── */

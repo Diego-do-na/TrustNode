@@ -28,7 +28,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import JSONResponse
 
 # Team modules. These signatures are the CONTRACT — notify the team if they change.
-from ingestion import ingest_pdf, get_collection_stats
+from ingestion import ingest_pdf, get_collection_stats, clear_collection
 from evaluator import run_audit, check_llm_alive
 from schemas import (
     AuditRequest,
@@ -243,6 +243,24 @@ async def ingest_endpoint(
         ingested=len(results),
         documents=results,
     )
+
+
+@app.post(
+    "/api/v1/clear_db",
+    tags=["system"],
+    summary="Wipe the ChromaDB collection used as RAG memory.",
+)
+async def clear_db_endpoint() -> dict:
+    """Drops the vector collection so the next audit only sees freshly ingested
+    documents. Prevents the LLM from grounding answers on evidence from past runs.
+    """
+    try:
+        result = await run_in_threadpool(clear_collection)
+    except Exception as e:  # noqa: BLE001
+        logger.exception("clear_db failed")
+        raise HTTPException(status_code=500, detail=f"clear_db error: {e}") from e
+    logger.info("ChromaDB collection cleared (existed=%s).", result.get("cleared"))
+    return result
 
 
 @app.post(

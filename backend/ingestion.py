@@ -400,6 +400,31 @@ def get_collection_stats(collection_name: str = "trustnode_evidence") -> dict:
     }
 
 
+def clear_collection(collection_name: str = "trustnode_evidence") -> dict:
+    """Drop the ChromaDB collection so the next ingest starts from a clean slate.
+
+    Used by ``POST /api/v1/clear_db`` before every new audit run to prevent
+    the LLM from grounding answers on stale evidence from previous sessions.
+    """
+    client = chromadb.PersistentClient(
+        path=CHROMA_PATH,
+        settings=Settings(anonymized_telemetry=False),
+    )
+    existing = [c.name for c in client.list_collections()]
+    if collection_name in existing:
+        client.delete_collection(collection_name)
+        deleted = True
+    else:
+        deleted = False
+
+    # Re-create the (empty) collection so subsequent queries don't error out
+    client.create_collection(
+        name=collection_name,
+        metadata={"hnsw:space": "cosine"},
+    )
+    return {"cleared": deleted, "collection": collection_name, "documents": 0}
+
+
 def ingest_pdf(file_bytes: bytes, filename: str, collection_name: str = "trustnode_evidence") -> dict:
     """Ingest a single PDF from raw bytes into ChromaDB.
 

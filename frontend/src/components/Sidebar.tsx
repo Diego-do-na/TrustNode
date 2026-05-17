@@ -39,7 +39,7 @@ export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive }: S
       <AnalyseCta onClick={onOpenUpload} />
 
       <span className="nav-label">Main</span>
-      {NAV_ITEMS.map(({ id, label, dot }) => {
+      {NAV_ITEMS.map(({ id, label }) => {
         const Icon = NAV_ICONS[id];
         const isActive = activeTab === id;
         return (
@@ -52,7 +52,6 @@ export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive }: S
           >
             <Icon />
             {label}
-            {dot && <span className={`nav-dot ${dot}`} />}
           </button>
         );
       })}

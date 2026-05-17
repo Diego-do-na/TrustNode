@@ -1,5 +1,6 @@
 import { useEffect, useMemo, useState } from "react";
 import { ThemeProvider } from "./context/ThemeContext";
+import { AppStateProvider } from "./context/AppStateContext";
 import { Sidebar } from "./components/Sidebar";
 import { Topbar } from "./components/Topbar";
 import { UploadModal } from "./components/UploadModal";
@@ -30,30 +31,41 @@ export default function App() {
 
   return (
     <ThemeProvider>
-      <section className="shell">
-        <Sidebar
-          activeTab={activeTab}
-          onTabChange={setActiveTab}
-          onOpenUpload={() => setUploadOpen(true)}
-          ollamaAlive={systemStatus?.ollama_alive ?? null}
-        />
-        <section className="content-column">
-          <AmbientBackground />
-          <Topbar key={activeTab} title={page.title} titleEmphasis={page.titleEmphasis} />
-          <main className="main page-enter" key={activeTab}>
-            <PageContent tab={activeTab} auditResults={auditResults} />
-          </main>
+      <AppStateProvider>
+        <section className="shell">
+          <Sidebar
+            activeTab={activeTab}
+            onTabChange={setActiveTab}
+            onOpenUpload={() => setUploadOpen(true)}
+            ollamaAlive={systemStatus?.ollama_alive ?? null}
+          />
+          <section className="content-column">
+            <AmbientBackground />
+            <Topbar key={`topbar-${activeTab}`} title={page.title} titleEmphasis={page.titleEmphasis} />
+            <main className="main page-enter" key={`main-${activeTab}`}>
+              <PageContent
+                tab={activeTab}
+                auditResults={auditResults}
+                onNavigate={setActiveTab}
+                onShowReport={(results) => {
+                  setAuditResults(results);
+                  setActiveTab("overview");
+                }}
+              />
+            </main>
+          </section>
         </section>
-      </section>
-      <PlaygroundCube />
-      <UploadModal
-        open={uploadOpen}
-        onClose={() => setUploadOpen(false)}
-        onAuditComplete={(results) => {
-          setAuditResults(results);
-          setUploadOpen(false);
-        }}
-      />
+        <PlaygroundCube />
+        <UploadModal
+          open={uploadOpen}
+          onClose={() => setUploadOpen(false)}
+          onAuditComplete={(results) => {
+            setAuditResults(results);
+            setUploadOpen(false);
+            setActiveTab("overview");
+          }}
+        />
+      </AppStateProvider>
     </ThemeProvider>
   );
 }

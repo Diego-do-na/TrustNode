@@ -1,7 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
-import { ingestFiles, runAudit } from "../api/client";
+import { clearDb, ingestFiles, runAudit } from "../api/client";
 import { ASSESSMENT_STANDARDS, STANDARD_DEFINITIONS } from "../data/standards";
-import type { AuditResponse } from "../api/client";
+import { formatBytes, useAppState } from "../context/AppStateContext";
+import type { AuditRequest, AuditResponse } from "../api/client";
 
 interface UploadModalProps {
   open: boolean;
@@ -9,10 +10,19 @@ interface UploadModalProps {
   onAuditComplete: (results: AuditResponse[]) => void;
 }
 
-type Phase = "idle" | "ingesting" | "auditing" | "error";
+type Phase = "idle" | "clearing" | "ingesting" | "auditing" | "error";
 
 export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps) {
+  const {
+    documents,
+    fileCache,
+    customStandards,
+    registerUploadedFiles,
+    recordReport,
+  } = useAppState();
+
   const [files, setFiles] = useState<File[]>([]);
+  const [reusedDocIds, setReusedDocIds] = useState<Set<string>>(new Set());
   const [selected, setSelected] = useState<Set<string>>(
     () => new Set(["ISO 27001", "ISO 9001"]),
   );
@@ -21,7 +31,23 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
   const [auditProgress, setAuditProgress] = useState({ current: 0, total: 0, standard: "" });
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const isLoading = phase === "ingesting" || phase === "auditing";
+  const isLoading = phase !== "idle" && phase !== "error";
+
+  const previousDocs = documents.filter((d) => Boolean(fileCache[d.id]));
+
+  const allStandards = [
+    ...ASSESSMENT_STANDARDS,
+    ...customStandards.map((s) => s.definition.standard_name),
+  ];
+
+  const standardDefinitionFor = useCallback(
+    (name: string): AuditRequest | undefined => {
+      if (STANDARD_DEFINITIONS[name]) return STANDARD_DEFINITIONS[name];
+      const custom = customStandards.find((s) => s.definition.standard_name === name);
+      return custom?.definition;
+    },
+    [customStandards],
+  );
 
   const handleBackdrop = useCallback(
     (e: React.MouseEvent<HTMLDivElement>) => {
@@ -35,6 +61,15 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
       const next = new Set(prev);
       if (next.has(name)) next.delete(name);
       else next.add(name);
+      return next;
+    });
+  };
+
+  const toggleReusedDoc = (id: string) => {
+    setReusedDocIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(id)) next.delete(id);
+      else next.add(id);
       return next;
     });
   };
@@ -56,8 +91,15 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
   };
 
   const handleRunAnalysis = async () => {
-    if (files.length === 0) {
-      setError("Please select at least one PDF file.");
+    const reusedFiles: File[] = [];
+    for (const id of reusedDocIds) {
+      const f = fileCache[id];
+      if (f) reusedFiles.push(f);
+    }
+
+    const filesToIngest = [...reusedFiles, ...files];
+    if (filesToIngest.length === 0) {
+      setError("Select at least one previously uploaded document or add a new PDF.");
       return;
     }
     if (selected.size === 0) {
@@ -68,9 +110,18 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
     setError(null);
 
     try {
-      setPhase("ingesting");
-      await ingestFiles(files);
+      // 1. Wipe Chroma so the LLM only sees evidence from this run.
+      setPhase("clearing");
+      await clearDb();
 
+      // 2. Re-ingest every file the user chose for this audit.
+      setPhase("ingesting");
+      await ingestFiles(filesToIngest);
+
+      // 3. Persist the doc metadata + file cache for newly dropped files.
+      if (files.length > 0) registerUploadedFiles(files);
+
+      // 4. Run audits sequentially against the selected standards.
       setPhase("auditing");
       const standardNames = Array.from(selected);
       const results: AuditResponse[] = [];
@@ -78,11 +129,27 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
       for (let i = 0; i < standardNames.length; i++) {
         const name = standardNames[i];
         setAuditProgress({ current: i + 1, total: standardNames.length, standard: name });
-        const def = STANDARD_DEFINITIONS[name];
+        const def = standardDefinitionFor(name);
         if (!def) continue;
         const result = await runAudit(def);
         results.push(result);
       }
+
+      // 5. Save the report so it shows up in the Reports tab.
+      const documentNames = filesToIngest.map((f) => f.name);
+      const avgScore =
+        results.length > 0
+          ? Math.round(
+              results.reduce((sum, r) => sum + r.global_score_percentage, 0) / results.length,
+            )
+          : 0;
+      recordReport({
+        name: `Audit · ${standardNames.join(", ")}`,
+        standards: standardNames,
+        score: avgScore,
+        results,
+        documentNames,
+      });
 
       onAuditComplete(results);
     } catch (err: unknown) {
@@ -104,6 +171,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
   useEffect(() => {
     if (!open) {
       setFiles([]);
+      setReusedDocIds(new Set());
       setPhase("idle");
       setError(null);
     }
@@ -111,12 +179,15 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
 
   if (!open) return null;
 
+  const totalDocs = files.length + reusedDocIds.size;
   const progressLabel =
-    phase === "ingesting"
-      ? `Uploading ${files.length} file${files.length > 1 ? "s" : ""}…`
-      : phase === "auditing"
-        ? `Analysing ${auditProgress.standard}… (${auditProgress.current}/${auditProgress.total})`
-        : null;
+    phase === "clearing"
+      ? "Clearing RAG memory…"
+      : phase === "ingesting"
+        ? `Ingesting ${totalDocs} file${totalDocs > 1 ? "s" : ""}…`
+        : phase === "auditing"
+          ? `Analysing ${auditProgress.standard}… (${auditProgress.current}/${auditProgress.total})`
+          : null;
 
   return (
     <div className="modal-bg open" onClick={handleBackdrop} role="presentation">
@@ -134,8 +205,9 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
           Analyse Documents
         </h2>
         <p className="modal-sub">
-          Upload company files and select the standards to assess against. TrustNode will surface
-          gaps and compliance status automatically.
+          Upload new files or reuse documents from past sessions, then pick the standards to assess
+          against. TrustNode wipes the RAG memory before every audit so results never bleed across
+          runs.
         </p>
 
         <input
@@ -172,9 +244,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
             {files.map((file, i) => (
               <li key={file.name} className="file-item">
                 <span className="file-item-name">{file.name}</span>
-                <span className="file-item-size">
-                  {(file.size / (1024 * 1024)).toFixed(1)} MB
-                </span>
+                <span className="file-item-size">{formatBytes(file.size)}</span>
                 {!isLoading && (
                   <button
                     type="button"
@@ -190,9 +260,34 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
           </ul>
         )}
 
+        {previousDocs.length > 0 && (
+          <>
+            <div className="modal-section-label">Reuse previous uploads</div>
+            <ul className="doc-checkbox-list">
+              {previousDocs.map((doc) => {
+                const checked = reusedDocIds.has(doc.id);
+                return (
+                  <li key={doc.id}>
+                    <label className={`doc-checkbox${checked ? " checked" : ""}`}>
+                      <input
+                        type="checkbox"
+                        checked={checked}
+                        disabled={isLoading}
+                        onChange={() => toggleReusedDoc(doc.id)}
+                      />
+                      <span className="doc-checkbox-name">{doc.name}</span>
+                      <span className="doc-checkbox-size">{formatBytes(doc.size)}</span>
+                    </label>
+                  </li>
+                );
+              })}
+            </ul>
+          </>
+        )}
+
         <div className="modal-section-label">Standards to assess</div>
         <div className="chip-row">
-          {ASSESSMENT_STANDARDS.map((name) => (
+          {allStandards.map((name) => (
             <button
               key={name}
               type="button"

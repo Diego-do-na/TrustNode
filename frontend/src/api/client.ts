@@ -42,6 +42,12 @@ export interface IngestResponse {
   documents: Record<string, unknown>[];
 }
 
+export async function clearDb(): Promise<{ cleared: boolean; collection: string }> {
+  const res = await fetch(`${API_BASE}/api/v1/clear_db`, { method: "POST" });
+  if (!res.ok) throw new Error(`clear_db failed: ${res.status}`);
+  return res.json();
+}
+
 export async function fetchStatus(): Promise<StatusResponse> {
   const res = await fetch(`${API_BASE}/api/v1/status`);
   if (!res.ok) throw new Error(`Status check failed: ${res.status}`);

@@ -1,64 +1,79 @@
-import { REPORTS } from "../data/navConfig";
+import { formatRelativeTime, useAppState } from "../context/AppStateContext";
+import type { AuditResponse } from "../api/client";
 
-const STATUS_LABELS = {
-  ready: "Ready",
-  generating: "Generating",
-  draft: "Draft",
-} as const;
+interface ReportsPageProps {
+  onShowReport: (results: AuditResponse[]) => void;
+}
 
-export function ReportsPage() {
+function scoreClass(score: number): "high" | "mid" | "low" {
+  if (score >= 80) return "high";
+  if (score >= 60) return "mid";
+  return "low";
+}
+
+export function ReportsPage({ onShowReport }: ReportsPageProps) {
+  const { reports, removeReport } = useAppState();
+
   return (
     <section className="page-panel">
       <section className="panel-stats">
         <article className="stat-pill">
-          <span className="stat-pill-value">4</span>
+          <span className="stat-pill-value">{reports.length}</span>
           <span className="stat-pill-label">Total reports</span>
         </article>
         <article className="stat-pill">
-          <span className="stat-pill-value">2</span>
-          <span className="stat-pill-label">Ready to export</span>
-        </article>
-        <article className="stat-pill">
-          <span className="stat-pill-value">1</span>
-          <span className="stat-pill-label">In progress</span>
+          <span className="stat-pill-value">
+            {reports.filter((r) => r.score >= 80).length}
+          </span>
+          <span className="stat-pill-label">High compliance</span>
         </article>
       </section>
 
       <section className="glass-card list-card">
         <header className="card-header">
           <span className="card-title">All reports</span>
-          <button type="button" className="btn-ghost btn-sm">
-            Export all
-          </button>
         </header>
 
-        <ul className="list-rows">
-          {REPORTS.map((report) => (
-            <li key={report.id}>
-              <button type="button" className="list-row">
-                <span className="list-row-main">
-                  <span className="list-row-title">{report.name}</span>
-                  <span className="list-row-meta">
-                    {report.standards.map((std) => (
-                      <span key={std} className="f-std">
-                        {std}
+        {reports.length === 0 ? (
+          <div className="card-empty">
+            No reports yet. Run your first audit from the sidebar to generate one.
+          </div>
+        ) : (
+          <ul className="list-rows">
+            {reports.map((report) => {
+              const level = scoreClass(report.score);
+              return (
+                <li key={report.id}>
+                  <div className="list-row">
+                    <button
+                      type="button"
+                      className="list-row-main list-row-open"
+                      onClick={() => onShowReport(report.results)}
+                    >
+                      <span className="list-row-title">{report.name}</span>
+                      <span className="list-row-meta">
+                        {report.standards.map((std) => (
+                          <span key={std} className="f-std">
+                            {std}
+                          </span>
+                        ))}
+                        <span className="f-time">{formatRelativeTime(report.createdAt)}</span>
                       </span>
-                    ))}
-                    <span className={`tag status-${report.status}`}>
-                      {STATUS_LABELS[report.status]}
-                    </span>
-                    <span className="f-time">{report.updated}</span>
-                  </span>
-                </span>
-                <span
-                  className={`list-row-score${report.score >= 80 ? " high" : report.score >= 70 ? " mid" : " low"}`}
-                >
-                  {report.score}%
-                </span>
-              </button>
-            </li>
-          ))}
-        </ul>
+                    </button>
+                    <span className={`list-row-score ${level}`}>{report.score}%</span>
+                    <button
+                      type="button"
+                      className="btn-ghost btn-sm"
+                      onClick={() => removeReport(report.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                </li>
+              );
+            })}
+          </ul>
+        )}
       </section>
     </section>
   );
