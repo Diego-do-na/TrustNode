@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { ASSESSMENT_STANDARDS } from "../data/mockData";
+import { ASSESSMENT_STANDARDS } from "../data/standards";
 import { useTheme } from "../context/ThemeContext";
 
 export function SettingsPage() {

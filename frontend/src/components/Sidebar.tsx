@@ -21,10 +21,16 @@ interface SidebarProps {
   activeTab: NavId;
   onTabChange: (tab: NavId) => void;
   onOpenUpload: () => void;
+  ollamaAlive: boolean | null;
 }
 
-export function Sidebar({ activeTab, onTabChange, onOpenUpload }: SidebarProps) {
+export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive }: SidebarProps) {
   const { theme, toggleTheme, themeLabel } = useTheme();
+
+  const statusClass =
+    ollamaAlive === null ? "pending" : ollamaAlive ? "online" : "offline";
+  const statusLabel =
+    ollamaAlive === null ? "Checking..." : ollamaAlive ? "System Online" : "LLM Offline";
 
   return (
     <aside className="sidebar">
@@ -52,6 +58,11 @@ export function Sidebar({ activeTab, onTabChange, onOpenUpload }: SidebarProps) 
       })}
 
       <section className="sidebar-bottom">
+        <div className="system-status">
+          <span className={`status-dot ${statusClass}`} />
+          <span className="status-label">{statusLabel}</span>
+        </div>
+
         <button
           type="button"
           className="theme-toggle"
