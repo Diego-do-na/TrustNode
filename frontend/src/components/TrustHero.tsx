@@ -1,5 +1,8 @@
 import { useEffect, useState } from "react";
 import type { AuditResponse } from "../api/client";
+import { useCountUp } from "../hooks/useCountUp";
+import { ScoreRing } from "./ScoreRing";
+import { averageTrustScore, scoreLevel } from "../utils/auditMetrics";
 
 interface TrustHeroProps {
   auditResults: AuditResponse[];
@@ -7,15 +10,10 @@ interface TrustHeroProps {
 
 export function TrustHero({ auditResults }: TrustHeroProps) {
   const hasData = auditResults.length > 0;
-
   const totalFindings = auditResults.reduce((sum, r) => sum + r.findings.length, 0);
-
-  const score = hasData
-    ? Math.round(
-        auditResults.reduce((sum, r) => sum + r.global_score_percentage, 0) /
-          auditResults.length,
-      )
-    : null;
+  const score = averageTrustScore(auditResults);
+  const displayScore = useCountUp(score);
+  const level = score !== null ? scoreLevel(score) : "mid";
 
   const [barWidth, setBarWidth] = useState("0%");
 
@@ -27,10 +25,15 @@ export function TrustHero({ auditResults }: TrustHeroProps) {
   return (
     <div className="trust-hero">
       <div className="score-label">Trust Score</div>
-      <div>
-        <span className="score-number">{score !== null ? score : "—"}</span>
-        <span className="score-max">/100</span>
+
+      <div className="score-ring-wrap">
+        {hasData && score !== null && <ScoreRing score={score} />}
+        <div className="score-display">
+          <span className="score-number">{displayScore !== null ? displayScore : "—"}</span>
+          <span className="score-max">/100</span>
+        </div>
       </div>
+
       {hasData ? (
         <div className="score-change">
           Across {auditResults.length} standard{auditResults.length > 1 ? "s" : ""}
@@ -38,24 +41,25 @@ export function TrustHero({ auditResults }: TrustHeroProps) {
       ) : (
         <div className="score-change score-change--empty">Run an audit to see your score</div>
       )}
+
       <div className="score-bar-track">
-        <div className="score-bar-fill" style={{ width: barWidth }} />
+        <div className={`score-bar-fill score-bar-fill--${level}`} style={{ width: barWidth }} />
       </div>
 
       {hasData && (
-        <div className="mt-4 flex flex-col items-center gap-1 text-xs font-mono text-zinc-400 bg-zinc-900/50 p-2 rounded-md border border-zinc-800 w-full">
-          <div className="flex justify-between w-full px-2">
-            <span>Manual Audit:</span>
-            <span className="text-zinc-300">~{totalFindings * 2} Hours</span>
+        <div className="trust-efficiency-panel">
+          <div className="trust-efficiency-row">
+            <span>Manual audit</span>
+            <span>~{totalFindings * 2} hours</span>
           </div>
-          <div className="flex justify-between w-full px-2">
-            <span>TrustNode AI:</span>
-            <span className="text-emerald-400">1.2 Minutes</span>
+          <div className="trust-efficiency-row">
+            <span>TrustNode AI</span>
+            <span className="trust-efficiency-highlight">1.2 minutes</span>
           </div>
-          <div className="w-full h-px bg-zinc-800 my-0.5"></div>
-          <div className="flex justify-between w-full px-2 font-bold text-emerald-500">
-            <span>Efficiency Gain:</span>
-            <span>+99%</span>
+          <div className="trust-efficiency-divider" />
+          <div className="trust-efficiency-row trust-efficiency-row--bold">
+            <span>Efficiency gain</span>
+            <span className="trust-efficiency-highlight">+99%</span>
           </div>
         </div>
       )}

@@ -17,6 +17,7 @@ export default function App() {
   const [uploadOpen, setUploadOpen] = useState(false);
   const [systemStatus, setSystemStatus] = useState<StatusResponse | null>(null);
   const [auditResults, setAuditResults] = useState<AuditResponse[]>([]);
+  const [lastAuditAt, setLastAuditAt] = useState<Date | null>(null);
   const [sidebarOpen, setSidebarOpen] = useState(true);
 
   useEffect(() => {
@@ -49,9 +50,12 @@ export default function App() {
               <PageContent
                 tab={activeTab}
                 auditResults={auditResults}
+                lastAuditAt={lastAuditAt}
                 onNavigate={setActiveTab}
+                onOpenUpload={() => setUploadOpen(true)}
                 onShowReport={(results) => {
                   setAuditResults(results);
+                  setLastAuditAt(new Date());
                   setActiveTab("overview");
                 }}
               />
@@ -64,6 +68,7 @@ export default function App() {
           onClose={() => setUploadOpen(false)}
           onAuditComplete={(results) => {
             setAuditResults(results);
+            setLastAuditAt(new Date());
             setUploadOpen(false);
             setActiveTab("overview");
           }}

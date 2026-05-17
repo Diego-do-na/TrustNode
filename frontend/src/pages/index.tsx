@@ -8,21 +8,46 @@ import { SettingsPage } from "./SettingsPage";
 interface PageContentProps {
   tab: NavId;
   auditResults: AuditResponse[];
+  lastAuditAt: Date | null;
   onNavigate: (tab: NavId) => void;
   onShowReport: (results: AuditResponse[]) => void;
+  onOpenUpload: () => void;
 }
 
-export function PageContent({ tab, auditResults, onNavigate, onShowReport }: PageContentProps) {
+export function PageContent({
+  tab,
+  auditResults,
+  lastAuditAt,
+  onNavigate,
+  onShowReport,
+  onOpenUpload,
+}: PageContentProps) {
+  const panel = (() => {
   switch (tab) {
     case "overview":
-      return <OverviewPage auditResults={auditResults} />;
+      return (
+        <OverviewPage
+          auditResults={auditResults}
+          lastAuditAt={lastAuditAt}
+          onOpenUpload={onOpenUpload}
+        />
+      );
     case "reports":
       return <ReportsPage onShowReport={onShowReport} />;
     case "documents":
-      return <DocumentsPage onOpenUpload={() => onNavigate("overview")} />;
+      return <DocumentsPage onOpenUpload={onOpenUpload} />;
     case "settings":
       return <SettingsPage />;
     default:
-      return <OverviewPage auditResults={auditResults} />;
+      return (
+        <OverviewPage
+          auditResults={auditResults}
+          lastAuditAt={lastAuditAt}
+          onOpenUpload={onOpenUpload}
+        />
+      );
   }
+  })();
+
+  return <div className="page-panel-transition">{panel}</div>;
 }
