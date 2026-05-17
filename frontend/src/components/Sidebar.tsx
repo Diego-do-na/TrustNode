@@ -33,7 +33,7 @@ export function Sidebar({ activeTab, onTabChange, onOpenUpload, ollamaAlive }: S
     ollamaAlive === null ? "Checking..." : ollamaAlive ? "System Online" : "LLM Offline";
 
   return (
-    <aside className="sidebar">
+    <aside className="sidebar print:hidden">
       <Logo />
 
       <AnalyseCta onClick={onOpenUpload} />

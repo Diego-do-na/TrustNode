@@ -114,8 +114,7 @@ export function FindingsCard({ auditResults }: FindingsCardProps) {
                 </span>
               </button>
 
-              {isOpen && (
-                <div className="finding-detail">
+              <div className="finding-detail">
                   {showGaps && (
                     <section className="finding-section">
                       <h4 className="finding-section-title">Gaps</h4>
@@ -142,7 +141,6 @@ export function FindingsCard({ auditResults }: FindingsCardProps) {
                     </section>
                   )}
                 </div>
-              )}
             </article>
           );
         })

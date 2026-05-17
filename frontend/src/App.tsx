@@ -32,17 +32,17 @@ export default function App() {
   return (
     <ThemeProvider>
       <AppStateProvider>
-        <section className="shell">
+        <section className="shell print:block print:bg-white print:text-black print:p-0 print:m-0">
           <Sidebar
             activeTab={activeTab}
             onTabChange={setActiveTab}
             onOpenUpload={() => setUploadOpen(true)}
             ollamaAlive={systemStatus?.ollama_alive ?? null}
           />
-          <section className="content-column">
+          <section className="content-column print:bg-white print:text-black print:p-0 print:m-0">
             <AmbientBackground />
             <Topbar key={`topbar-${activeTab}`} title={page.title} titleEmphasis={page.titleEmphasis} />
-            <main className="main page-enter" key={`main-${activeTab}`}>
+            <main className="main page-enter print:p-0 print:m-0" key={`main-${activeTab}`}>
               <PageContent
                 tab={activeTab}
                 auditResults={auditResults}

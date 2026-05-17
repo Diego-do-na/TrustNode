@@ -50,7 +50,7 @@ export function PlaygroundCube() {
 
   return (
     <section
-      className={`playground-cube-scene${dragging ? " is-dragging" : ""}`}
+      className={`playground-cube-scene print:hidden${dragging ? " is-dragging" : ""}`}
       style={{ left: pos.x, top: pos.y, width: CUBE_SIZE, height: CUBE_SIZE }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}

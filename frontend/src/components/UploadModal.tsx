@@ -2,6 +2,7 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { clearDb, ingestFiles, runAudit } from "../api/client";
 import { ASSESSMENT_STANDARDS, STANDARD_DEFINITIONS } from "../data/standards";
 import { formatBytes, useAppState } from "../context/AppStateContext";
+import { PixelAnimation } from "./PixelAnimation";
 import type { AuditRequest, AuditResponse } from "../api/client";
 
 interface UploadModalProps {
@@ -303,9 +304,8 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
         {error && <div className="modal-error">{error}</div>}
 
         {isLoading && progressLabel && (
-          <div className="modal-progress">
-            <span className="spinner" />
-            {progressLabel}
+          <div className="w-full h-64 flex items-center justify-center bg-transparent">
+            <PixelAnimation showHint={true} hintText={progressLabel} />
           </div>
         )}
 

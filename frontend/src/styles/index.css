@@ -1,3 +1,5 @@
+@import "tailwindcss";
+
 *,
 *::before,
 *::after {
@@ -676,10 +678,14 @@ button {
 }
 
 .finding-detail {
+  display: none;
   padding: 4px 0 16px 18px;
-  display: flex;
   flex-direction: column;
   gap: 14px;
+}
+
+.finding-item.is-open .finding-detail {
+  display: flex;
   animation: findingExpand 0.22s ease both;
 }
 
@@ -1610,4 +1616,83 @@ button:disabled {
 ::-webkit-scrollbar-thumb {
   background: var(--glass-border);
   border-radius: 4px;
+}
+
+@media print {
+  @page {
+    margin: 18mm 14mm;
+  }
+
+  [data-theme="dark"],
+  [data-theme="light"] {
+    --bg: #ffffff;
+    --sidebar-bg: #ffffff;
+    --glass: #ffffff;
+    --glass-hover: #ffffff;
+    --glass-border: rgba(0, 0, 0, 0.14);
+    --active-bg: rgba(0, 0, 0, 0.04);
+    --text-1: #111111;
+    --text-2: rgba(17, 17, 17, 0.72);
+    --text-3: rgba(17, 17, 17, 0.52);
+  }
+
+  html,
+  body {
+    background: #ffffff !important;
+    color: #111111 !important;
+  }
+
+  .shell {
+    display: block !important;
+    min-height: 0 !important;
+  }
+
+  .content-column {
+    min-height: 0 !important;
+  }
+
+  .main {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .topbar {
+    padding: 0 0 12px 0 !important;
+    border: none !important;
+  }
+
+  .glass-card,
+  .findings-card,
+  .trust-hero,
+  .standards-card {
+    background: #ffffff !important;
+    backdrop-filter: none !important;
+    box-shadow: none !important;
+    border: 1px solid rgba(0, 0, 0, 0.14) !important;
+    break-inside: avoid;
+  }
+
+  .finding-detail {
+    display: flex !important;
+    animation: none !important;
+  }
+
+  .finding-item {
+    break-inside: avoid;
+  }
+
+  .finding-caret {
+    display: none !important;
+  }
+
+  .evidence-snippet {
+    background: #f4f4f4 !important;
+    color: #111111 !important;
+    border: 1px solid rgba(0, 0, 0, 0.1) !important;
+    box-shadow: none !important;
+  }
+
+  .evidence-snippet code {
+    color: #111111 !important;
+  }
 }
