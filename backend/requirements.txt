@@ -1,0 +1,20 @@
+# TrustNode backend — direct dependencies
+# Install with: pip install -r requirements.txt
+
+# Web framework + ASGI server
+fastapi==0.136.1
+uvicorn==0.47.0
+python-multipart==0.0.28
+
+# HTTP clients (httpx for async Ollama calls, requests for sync embeddings)
+httpx==0.28.1
+requests==2.34.2
+
+# Data validation
+pydantic==2.13.4
+
+# PDF parsing
+PyMuPDF==1.27.2.3
+
+# Local vector store
+chromadb==1.5.9
