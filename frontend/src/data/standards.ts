@@ -1,44 +1,217 @@
 import type { AuditRequest } from "../api/client";
 
+/**
+ * Tipos de documento. Un control con `applies_to` solo se evalua si el tipo del
+ * documento esta en esa lista; si no, el resultado es "not_evaluable" y no cuenta en el score.
+ * Los controles SIN `applies_to` se consideran siempre evaluables (compatibilidad).
+ *
+ * Agrega estos campos opcionales al tipo de control en ../api/client.ts:
+ *   applies_to?: DocType[];
+ *   legacy_id?: string;   // numeracion ISO 27001:2013, solo trazabilidad
+ */
+export type DocType = "isms_policy" | "topic_policy" | "procedure" | "soa";
+
 export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
   "ISO 27001": {
     standard_name: "ISO 27001",
     domain: "Information Security",
     controls: [
+      // ---------- Cláusulas del SGSI ----------
+      {
+        control_id: "5.2",
+        title: "Information security policy (clause)",
+        description:
+          "Does the document state a policy appropriate to the organization that includes objectives or a framework for setting them, a commitment to satisfy applicable requirements, and a commitment to continual improvement?",
+        search_keywords: ["policy", "objectives", "commitment", "applicable requirements", "continual improvement"],
+        applies_to: ["isms_policy"],
+        // NOTE (deliberate omission): ISO 27001 cl. 5.2(a) also requires the policy to be
+        // "appropriate to the purpose of the organization". That is a judgement, not a
+        // single verifiable condition, so it has intentionally NO check here.
+        checks: [
+          {
+            id: "5.2.a",
+            question: "Does the document contain a formal information security policy statement made on behalf of the organization?",
+            hint: "Count: a declaration of what the organization commits to or intends to do about information security.",
+            recommendation: "Add a formal information security policy statement, issued on behalf of the organization by its top management.",
+          },
+          {
+            id: "5.2.b",
+            question: "Does the document include information security objectives, or a framework for setting them?",
+            hint: "Count: a list of objectives, or a described process for setting and reviewing them.",
+            recommendation: "State the information security objectives in the policy, or describe the framework used to set and review them.",
+          },
+          {
+            id: "5.2.c",
+            question: "Does the document include a commitment to satisfy applicable information security requirements?",
+            hint: "Count: a commitment to meet legal, regulatory, contractual or standard requirements.",
+            recommendation: "Add an explicit commitment to satisfy applicable legal, regulatory, contractual and standard requirements.",
+          },
+          {
+            id: "5.2.d",
+            question: "Does the document include a commitment to continual improvement of the information security management system?",
+            hint: "Count: an explicit commitment to improve the ISMS over time.",
+            anchors: ["improv"],
+            recommendation: "Add an explicit commitment to the continual improvement of the ISMS.",
+          },
+        ],
+      },
+      {
+        control_id: "6.2",
+        title: "Information security objectives",
+        description:
+          "Are the information security objectives stated, and are they measurable (target, metric, owner or frequency) where practicable?",
+        search_keywords: ["objective", "target", "measure", "KPI", "metric", "review frequency"],
+        applies_to: ["isms_policy"],
+        checks: [
+          {
+            id: "6.2.a",
+            question: "Does the document state information security objectives?",
+            hint: "Count: explicit objectives that the organization sets for information security.",
+            recommendation: "State the information security objectives explicitly.",
+          },
+          {
+            id: "6.2.b",
+            question: "Is at least one objective measurable, i.e. does it have a target value, or a defined indicator or metric?",
+            hint: "Count: a numeric target, threshold or deadline, or a named indicator used to track an objective.",
+            recommendation: "Give each objective a measurable target or a defined indicator, so progress can be tracked.",
+          },
+          {
+            id: "6.2.c",
+            question: "Does the document state who is responsible for achieving the objectives, or how often progress towards them is evaluated?",
+            hint: "Count: a named role or function accountable for the objectives themselves, or a stated frequency or schedule for evaluating progress towards the objectives.",
+            recommendation: "Assign an owner for the objectives and define how often progress against them is evaluated.",
+          },
+        ],
+      },
+      {
+        control_id: "4.3",
+        title: "Scope of the ISMS",
+        description:
+          "Does the document state, or point to, the scope of the ISMS (organization units, locations, systems)?",
+        search_keywords: ["scope", "applies to", "boundaries", "locations", "legal entities"],
+        applies_to: ["isms_policy"],
+        checks: [
+          {
+            id: "4.3.a",
+            question: "Does the document state that an ISMS exists, or that the document is part of one?",
+            hint: "Count: a statement that an information security management system is in place or that this document belongs to it.",
+            recommendation: "State that the document forms part of the organization's ISMS.",
+          },
+          {
+            id: "4.3.b",
+            question: "Does the document identify the legal entities or organizational units covered by the ISMS?",
+            hint: "Count: names, or an explicit list, of the entities or organizational units inside the ISMS scope.",
+            recommendation: "Name the legal entities or organizational units that the ISMS covers.",
+          },
+          {
+            id: "4.3.c",
+            question: "Does the document identify the physical locations or sites covered by the ISMS?",
+            hint: "Count: sites, offices or facilities named as being inside the ISMS scope.",
+            recommendation: "List the locations or sites that the ISMS covers.",
+          },
+          {
+            id: "4.3.d",
+            question: "Does the document identify the systems, services or processes covered by the ISMS?",
+            hint: "Count: an explicit list or boundary statement naming what is within the ISMS scope.",
+            recommendation: "Define the ISMS boundary by listing the systems, services or processes it covers.",
+          },
+        ],
+      },
+
+      // ---------- Anexo A: controles organizacionales ----------
       {
         control_id: "A.5.1",
-        title: "Information Security Policies",
+        title: "Policies for information security",
         description:
-          "Security policies must be defined, approved by management, published and communicated to all employees.",
-        search_keywords: ["security policy", "information security", "management approval", "policy communication"],
+          "Is the policy approved by management, published, communicated to personnel and relevant parties, and reviewed at planned intervals (with evidence of the reviews)?",
+        search_keywords: ["approved by", "signed", "published", "communicated", "annual review", "version history"],
+        applies_to: ["isms_policy", "topic_policy"],
+        legacy_id: "A.5.1.1",
       },
       {
-        control_id: "A.9.1",
-        title: "Access Control Policy",
+        control_id: "A.5.2",
+        title: "Information security roles and responsibilities",
         description:
-          "An access control policy shall be established and reviewed based on business and security requirements.",
-        search_keywords: ["access control", "user access", "authorization", "privilege"],
+          "Are responsibilities for information security defined and allocated (e.g. CISO, managers, all staff)?",
+        search_keywords: ["responsible", "CISO", "managers", "staff", "owner", "steering committee"],
+        applies_to: ["isms_policy", "topic_policy"],
+        legacy_id: "A.6.1.1",
       },
       {
-        control_id: "A.9.4.2",
-        title: "Secure Log-on Procedures",
+        control_id: "A.5.15",
+        title: "Access control",
         description:
-          "Multi-factor authentication and secure log-on procedures must be implemented to prevent unauthorized access.",
-        search_keywords: ["MFA", "multi-factor", "authentication", "login", "two-factor"],
+          "Does an access control rule or topic-specific policy exist covering business and security requirements for access (least privilege, need-to-know, authorization)?",
+        search_keywords: ["access control", "least privilege", "need to know", "authorization", "user access"],
+        applies_to: ["topic_policy"],
+        legacy_id: "A.9.1.1",
       },
       {
-        control_id: "A.12.6.1",
-        title: "Technical Vulnerability Management",
+        control_id: "A.5.24",
+        title: "Incident management planning and preparation",
         description:
-          "Technical vulnerabilities must be identified, evaluated and remediated in a timely manner.",
-        search_keywords: ["vulnerability", "patch", "remediation", "CVE", "security update"],
+          "Is there a defined process, roles and responsibilities for managing security incidents (reporting, assessment, classification, response)?",
+        search_keywords: ["incident response", "classification", "escalation", "roles", "incident procedure"],
+        applies_to: ["procedure", "topic_policy"],
+        legacy_id: "A.16.1.1",
       },
       {
-        control_id: "A.16.1",
-        title: "Incident Management",
+        control_id: "A.5.29",
+        title: "Information security during disruption",
         description:
-          "Security incidents must be reported, classified, and handled according to a documented incident response procedure.",
-        search_keywords: ["incident", "security event", "breach", "incident response", "reporting"],
+          "Does the document require business continuity / disruption plans to be maintained and tested?",
+        search_keywords: ["business continuity", "disruption", "recovery", "tested", "continuity plan"],
+        applies_to: ["isms_policy", "procedure"],
+        legacy_id: "A.17.1.1",
+      },
+      {
+        control_id: "A.5.31",
+        title: "Legal, statutory, regulatory and contractual requirements",
+        description:
+          "Does the document commit to meeting applicable legal, regulatory and contractual requirements (e.g. data protection law)?",
+        search_keywords: ["legal", "regulatory", "legislation", "GDPR", "data protection", "contractual"],
+        applies_to: ["isms_policy"],
+        legacy_id: "A.18.1.1",
+      },
+
+      // ---------- Anexo A: personas ----------
+      {
+        control_id: "A.6.3",
+        title: "Information security awareness, education and training",
+        description:
+          "Does the document require security awareness training for personnel (on joining and regularly afterwards)?",
+        search_keywords: ["awareness", "training", "induction", "regularly", "education"],
+        applies_to: ["isms_policy", "procedure"],
+        legacy_id: "A.7.2.2",
+      },
+      {
+        control_id: "A.6.8",
+        title: "Information security event reporting",
+        description:
+          "Is there a mechanism for personnel to report observed or suspected security events or breaches in a timely manner, and to whom?",
+        search_keywords: ["report", "breach", "suspected", "line manager", "security event", "notify"],
+        applies_to: ["isms_policy", "procedure"],
+        legacy_id: "A.16.1.2",
+      },
+
+      // ---------- Anexo A: tecnológicos ----------
+      {
+        control_id: "A.8.5",
+        title: "Secure authentication",
+        description:
+          "Where this document covers authentication, does it specify secure authentication technologies/procedures aligned with the access control policy (e.g. strength of method, MFA where risk requires)?",
+        search_keywords: ["authentication", "log-on", "login", "password", "MFA", "multi-factor"],
+        applies_to: ["topic_policy", "procedure"],
+        legacy_id: "A.9.4.2",
+      },
+      {
+        control_id: "A.8.8",
+        title: "Management of technical vulnerabilities",
+        description:
+          "Where this document covers vulnerability management, does it define how vulnerabilities are identified, evaluated and remediated within defined timeframes?",
+        search_keywords: ["vulnerability", "patch", "remediation", "scan", "CVE", "timeframe"],
+        applies_to: ["topic_policy", "procedure"],
+        legacy_id: "A.12.6.1",
       },
     ],
   },

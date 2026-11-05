@@ -303,21 +303,16 @@ def query_evidence(
     keywords: list[str],
     n_results: int = 3,
     collection_name: str = "trustnode_evidence",
-) -> str:
+) -> list[dict]:
     """
-    Converts a list of keywords into an embedding, searches ChromaDB for
-    the most relevant fragments, and returns a consolidated text block
-    ready to be consumed by the audit pipeline.
-
-    Args:
-        keywords:        List of search terms (e.g. ["GDPR", "personal data"]).
-        n_results:       Number of fragments to retrieve (default 3).
-        collection_name: Name of the collection to query.
+    Converts a list of keywords into an embedding and searches ChromaDB for
+    the most relevant fragments.
 
     Returns:
-        String with the most relevant fragments concatenated, each headed
-        by its metadata (source, page, relevance score). Returns a warning
-        message if the collection is empty or no results are found.
+        Structured list of chunks, most relevant first. Each item is a dict
+        with keys ``id`` (ChromaDB id), ``text``, ``page`` (int | None),
+        ``source`` and ``relevance`` (cosine similarity as a percentage).
+        The list is empty if the collection is missing/empty or nothing matched.
 
     Raises:
         ConnectionError: If Ollama is unavailable when generating the query embedding.
@@ -329,15 +324,14 @@ def query_evidence(
 
     existing = [c.name for c in client.list_collections()]
     if collection_name not in existing:
-        return (
-            f"[query_evidence] Collection '{collection_name}' does not exist. "
-            "Run `process_and_store_document()` first."
-        )
+        print(f"[query_evidence] Collection '{collection_name}' does not exist.")
+        return []
 
     collection = client.get_collection(collection_name)
 
     if collection.count() == 0:
-        return "[query_evidence] Collection is empty. No evidence has been indexed."
+        print("[query_evidence] Collection is empty. No evidence has been indexed.")
+        return []
 
     # ── Build query embedding ───────────────────────────────
     query_text = " ".join(keywords)
@@ -357,26 +351,22 @@ def query_evidence(
         include=["documents", "metadatas", "distances"],
     )
 
-    # ── Consolidate results into a single text block ────────
-    fragments: list[str] = []
-
+    ids       = results.get("ids", [[]])[0]
     docs      = results.get("documents", [[]])[0]
     metas     = results.get("metadatas", [[]])[0]
     distances = results.get("distances", [[]])[0]
 
-    for doc, meta, dist in zip(docs, metas, distances):
-        relevance = round((1 - dist) * 100, 2)  # cosine distance → % similarity
-        header = (
-            f"[Source: {meta.get('source', 'unknown')} | "
-            f"Page: {meta.get('page', '?')} | "
-            f"Relevance: {relevance}%]"
-        )
-        fragments.append(f"{header}\n{doc}")
-
-    if not fragments:
-        return "[query_evidence] No relevant fragments found for the given keywords."
-
-    return "\n\n---\n\n".join(fragments)
+    chunks: list[dict] = []
+    for cid, doc, meta, dist in zip(ids, docs, metas, distances):
+        meta = meta or {}
+        chunks.append({
+            "id": cid,
+            "text": doc,
+            "page": meta.get("page"),
+            "source": meta.get("source", "unknown"),
+            "relevance": round((1 - dist) * 100, 2),  # cosine distance → % similarity
+        })
+    return chunks
 
 
 # ══════════════════════════════════════════════

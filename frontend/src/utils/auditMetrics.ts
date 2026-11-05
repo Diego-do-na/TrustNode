@@ -1,6 +1,23 @@
 import type { AuditResponse, AuditResult } from "../api/client";
 import { STANDARD_DEFINITIONS } from "../data/standards";
 import type { FindingSeverity } from "../types";
+import type { DocType } from "../api/client";
+import { weightedScore } from "./scoring";
+
+export const DOC_TYPE_LABELS: Record<DocType, string> = {
+  isms_policy: "ISMS policy",
+  topic_policy: "Topic-specific policy",
+  procedure: "Procedure",
+  soa: "Statement of Applicability",
+};
+
+export function docTypeLabel(dt: DocType | undefined | null): string | null {
+  return dt ? (DOC_TYPE_LABELS[dt] ?? dt) : null;
+}
+
+export function formatScore(pct: number | null | undefined): string {
+  return pct === null || pct === undefined ? "N/A" : `${Math.round(pct)}%`;
+}
 
 export function scoreLevel(pct: number): "high" | "mid" | "low" {
   if (pct >= 80) return "high";
@@ -9,10 +26,8 @@ export function scoreLevel(pct: number): "high" | "mid" | "low" {
 }
 
 export function averageTrustScore(auditResults: AuditResponse[]): number | null {
-  if (auditResults.length === 0) return null;
-  return Math.round(
-    auditResults.reduce((sum, r) => sum + r.global_score_percentage, 0) / auditResults.length,
-  );
+  const score = weightedScore(auditResults);
+  return score === null ? null : Math.round(score);
 }
 
 function toSeverity(risk: AuditResult["risk_level"]): FindingSeverity {

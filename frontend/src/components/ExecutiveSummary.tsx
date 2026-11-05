@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { weightedScore } from "../utils/scoring";
 import {
   generateSummary,
   type AuditResponse,
@@ -16,23 +17,14 @@ function aggregatePayload(auditResults: AuditResponse[]) {
     .map((a) => a.standard_audited)
     .join(" + ");
 
-  const totalControls = auditResults.reduce(
-    (acc, a) => acc + a.results.length,
-    0,
-  );
-  const weightedScore =
-    totalControls === 0
-      ? 0
-      : auditResults.reduce(
-          (acc, a) => acc + a.global_score_percentage * a.results.length,
-          0,
-        ) / totalControls;
+  // Weight by evaluated controls only; null scores and not_evaluable controls don't count.
+  const aggregate = weightedScore(auditResults);
 
   const results: AuditResult[] = auditResults.flatMap((a) => a.results);
 
   return {
     standard_audited,
-    global_score_percentage: Number(weightedScore.toFixed(1)),
+    global_score_percentage: aggregate === null ? null : Number(aggregate.toFixed(1)),
     results,
   };
 }

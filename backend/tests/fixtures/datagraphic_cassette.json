@@ -1,0 +1,1685 @@
+{
+ "meta": {
+  "recorded_at": "2026-11-05T21:51:49+00:00",
+  "model": "llama3.1",
+  "model_digest": "46e0c10c039e",
+  "options": {
+   "temperature": 0.0,
+   "seed": 42,
+   "num_ctx": 6144
+  },
+  "retrieval_mode": "per_check_k3",
+  "document": "datagraphic_policy.pdf",
+  "standard": "ISO 27001",
+  "doc_type": "isms_policy",
+  "total_secs": 177.4,
+  "llm_calls": 17
+ },
+ "retrieval": [
+  {
+   "keywords": [
+    "Does the document contain a formal information security policy statement made on behalf of the organization?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 64.13
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 64.11
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 64.09
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document include information security objectives, or a framework for setting them?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 60.82
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 59.58
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 58.42
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document include a commitment to satisfy applicable information security requirements?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 65.38
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 64.81
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 60.23
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document include a commitment to continual improvement of the information security management system?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 64.5
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 60.23
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 59.26
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document state information security objectives?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 58.6
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 55.93
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 55.03
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Is at least one objective measurable, i.e. does it have a target value, or a defined indicator or metric?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 51.44
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 46.03
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 45.8
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document state who is responsible for achieving the objectives, or how often progress towards them is evaluated?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk0",
+     "text": "Information Security Policy 1 Information Security Policy Document Information Version: 2.2 Status: LIVE Issue date: 06/01/2026 Classification: Public Approved by: Glyn King – CEO Robert Hoon – Group Managing Director Author: Mike Green – Chief Information Security Officer (CISO) Owner: Information Security Steering Committee (ISSC) • A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS). All revisions must be made following the document control requirements of the standard. • Effective from the Version and Issue date above. It supersedes previous versions, which are withdrawn and hard copies destroyed. • Effective for Datagraphic Limited and Datagraphic Group Limited (hereafter referred to as “Datagraphic”). • Uncontrolled when printed. The ‘master’ document is available under Datagraphic’s ISO 27001 ISMS Documentation Control Log. • Subject to change by Datagraphic in line with changes in statutory law, case law and best practice.",
+     "page": 2,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 59.27
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 58.44
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 55.28
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document state that an ISMS exists, or that the document is part of one?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk0",
+     "text": "Information Security Policy 1 Information Security Policy Document Information Version: 2.2 Status: LIVE Issue date: 06/01/2026 Classification: Public Approved by: Glyn King – CEO Robert Hoon – Group Managing Director Author: Mike Green – Chief Information Security Officer (CISO) Owner: Information Security Steering Committee (ISSC) • A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS). All revisions must be made following the document control requirements of the standard. • Effective from the Version and Issue date above. It supersedes previous versions, which are withdrawn and hard copies destroyed. • Effective for Datagraphic Limited and Datagraphic Group Limited (hereafter referred to as “Datagraphic”). • Uncontrolled when printed. The ‘master’ document is available under Datagraphic’s ISO 27001 ISMS Documentation Control Log. • Subject to change by Datagraphic in line with changes in statutory law, case law and best practice.",
+     "page": 2,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 61.46
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 60.32
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk4",
+     "text": "Information Security Policy 5 Document History Date Version Author Description of change 01/11/2011 1.1 M Green Document created. 21/12/2014 1.2 M Green Objectives added. 21/03/2018 1.3 M Green Objective 8 added: Commitment to Continual Improvement added. 09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors. 02/01/2020 1.5 M Green C&CCC updated to Pay.UK. Review and re-signed by both Managing Directors. 21/01/2021 1.6 M Green Reviewed and re-signed by both Managing Directors. 26/01/2022 1.7 M Green Reviewed and re-signed by both Managing Directors. 16/02/2022 1.8 M Green Text changes are shown in bold below: All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO). 7 This applies to the requirements of Pay.UK (at the production facility), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function. Reviewed and re-signed by both Managing Directors. 01/04/2022 1.9 M Green Reviewed and updated to the standard format. 06/06/2023 2.0 S Beech Reviewed and re-signed by both Managing Directors. 07/02/2025 2.1 S Beech Reviewed and signed by senior management. 06/01/2026 2.2 S Beech Reviewed and signed by the senior management.",
+     "page": 6,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 53.09
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document identify the legal entities or organizational units covered by the ISMS?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 61.38
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 57.44
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 57.01
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document identify the physical locations or sites covered by the ISMS?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 65.53
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk0",
+     "text": "Information Security Policy 1 Information Security Policy Document Information Version: 2.2 Status: LIVE Issue date: 06/01/2026 Classification: Public Approved by: Glyn King – CEO Robert Hoon – Group Managing Director Author: Mike Green – Chief Information Security Officer (CISO) Owner: Information Security Steering Committee (ISSC) • A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS). All revisions must be made following the document control requirements of the standard. • Effective from the Version and Issue date above. It supersedes previous versions, which are withdrawn and hard copies destroyed. • Effective for Datagraphic Limited and Datagraphic Group Limited (hereafter referred to as “Datagraphic”). • Uncontrolled when printed. The ‘master’ document is available under Datagraphic’s ISO 27001 ISMS Documentation Control Log. • Subject to change by Datagraphic in line with changes in statutory law, case law and best practice.",
+     "page": 2,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 59.91
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 59.67
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "Does the document identify the systems, services or processes covered by the ISMS?"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 65.02
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk0",
+     "text": "Information Security Policy 1 Information Security Policy Document Information Version: 2.2 Status: LIVE Issue date: 06/01/2026 Classification: Public Approved by: Glyn King – CEO Robert Hoon – Group Managing Director Author: Mike Green – Chief Information Security Officer (CISO) Owner: Information Security Steering Committee (ISSC) • A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS). All revisions must be made following the document control requirements of the standard. • Effective from the Version and Issue date above. It supersedes previous versions, which are withdrawn and hard copies destroyed. • Effective for Datagraphic Limited and Datagraphic Group Limited (hereafter referred to as “Datagraphic”). • Uncontrolled when printed. The ‘master’ document is available under Datagraphic’s ISO 27001 ISMS Documentation Control Log. • Subject to change by Datagraphic in line with changes in statutory law, case law and best practice.",
+     "page": 2,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 57.7
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 57.59
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "approved by",
+    "signed",
+    "published",
+    "communicated",
+    "annual review",
+    "version history"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk0",
+     "text": "Information Security Policy 1 Information Security Policy Document Information Version: 2.2 Status: LIVE Issue date: 06/01/2026 Classification: Public Approved by: Glyn King – CEO Robert Hoon – Group Managing Director Author: Mike Green – Chief Information Security Officer (CISO) Owner: Information Security Steering Committee (ISSC) • A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS). All revisions must be made following the document control requirements of the standard. • Effective from the Version and Issue date above. It supersedes previous versions, which are withdrawn and hard copies destroyed. • Effective for Datagraphic Limited and Datagraphic Group Limited (hereafter referred to as “Datagraphic”). • Uncontrolled when printed. The ‘master’ document is available under Datagraphic’s ISO 27001 ISMS Documentation Control Log. • Subject to change by Datagraphic in line with changes in statutory law, case law and best practice.",
+     "page": 2,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 57.42
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk4",
+     "text": "Information Security Policy 5 Document History Date Version Author Description of change 01/11/2011 1.1 M Green Document created. 21/12/2014 1.2 M Green Objectives added. 21/03/2018 1.3 M Green Objective 8 added: Commitment to Continual Improvement added. 09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors. 02/01/2020 1.5 M Green C&CCC updated to Pay.UK. Review and re-signed by both Managing Directors. 21/01/2021 1.6 M Green Reviewed and re-signed by both Managing Directors. 26/01/2022 1.7 M Green Reviewed and re-signed by both Managing Directors. 16/02/2022 1.8 M Green Text changes are shown in bold below: All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO). 7 This applies to the requirements of Pay.UK (at the production facility), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function. Reviewed and re-signed by both Managing Directors. 01/04/2022 1.9 M Green Reviewed and updated to the standard format. 06/06/2023 2.0 S Beech Reviewed and re-signed by both Managing Directors. 07/02/2025 2.1 S Beech Reviewed and signed by senior management. 06/01/2026 2.2 S Beech Reviewed and signed by the senior management.",
+     "page": 6,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 53.74
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 50.81
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "responsible",
+    "CISO",
+    "managers",
+    "staff",
+    "owner",
+    "steering committee"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 54.01
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk4",
+     "text": "Information Security Policy 5 Document History Date Version Author Description of change 01/11/2011 1.1 M Green Document created. 21/12/2014 1.2 M Green Objectives added. 21/03/2018 1.3 M Green Objective 8 added: Commitment to Continual Improvement added. 09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors. 02/01/2020 1.5 M Green C&CCC updated to Pay.UK. Review and re-signed by both Managing Directors. 21/01/2021 1.6 M Green Reviewed and re-signed by both Managing Directors. 26/01/2022 1.7 M Green Reviewed and re-signed by both Managing Directors. 16/02/2022 1.8 M Green Text changes are shown in bold below: All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO). 7 This applies to the requirements of Pay.UK (at the production facility), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function. Reviewed and re-signed by both Managing Directors. 01/04/2022 1.9 M Green Reviewed and updated to the standard format. 06/06/2023 2.0 S Beech Reviewed and re-signed by both Managing Directors. 07/02/2025 2.1 S Beech Reviewed and signed by senior management. 06/01/2026 2.2 S Beech Reviewed and signed by the senior management.",
+     "page": 6,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 48.11
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 47.41
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "business continuity",
+    "disruption",
+    "recovery",
+    "tested",
+    "continuity plan"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 52.4
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 48.49
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk4",
+     "text": "Information Security Policy 5 Document History Date Version Author Description of change 01/11/2011 1.1 M Green Document created. 21/12/2014 1.2 M Green Objectives added. 21/03/2018 1.3 M Green Objective 8 added: Commitment to Continual Improvement added. 09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors. 02/01/2020 1.5 M Green C&CCC updated to Pay.UK. Review and re-signed by both Managing Directors. 21/01/2021 1.6 M Green Reviewed and re-signed by both Managing Directors. 26/01/2022 1.7 M Green Reviewed and re-signed by both Managing Directors. 16/02/2022 1.8 M Green Text changes are shown in bold below: All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO). 7 This applies to the requirements of Pay.UK (at the production facility), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function. Reviewed and re-signed by both Managing Directors. 01/04/2022 1.9 M Green Reviewed and updated to the standard format. 06/06/2023 2.0 S Beech Reviewed and re-signed by both Managing Directors. 07/02/2025 2.1 S Beech Reviewed and signed by senior management. 06/01/2026 2.2 S Beech Reviewed and signed by the senior management.",
+     "page": 6,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 48.47
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "legal",
+    "regulatory",
+    "legislation",
+    "GDPR",
+    "data protection",
+    "contractual"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 68.51
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 64.68
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 59.99
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "awareness",
+    "training",
+    "induction",
+    "regularly",
+    "education"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk3",
+     "text": "Information Security Policy 4 Footnotes: 1. Information takes many forms and includes data stored on computers, transmitted over networks (such as email and SFTP), printed out or written on paper, or spoken in conversation or over the telephone. 2. The protection of valuable or sensitive Information from unauthorised disclosure. 3. Safeguarding the accuracy and completeness of Information by protecting against unauthorised modification. 4. This applies to the requirements of Pay.UK (at the production centre), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. 5. This will ensure that Information and vital services are available when and where needed. 6. Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function. 7. Mike Green (CISO) – mgreen@datagraphic.co.uk",
+     "page": 5,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 53.75
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk4",
+     "text": "Information Security Policy 5 Document History Date Version Author Description of change 01/11/2011 1.1 M Green Document created. 21/12/2014 1.2 M Green Objectives added. 21/03/2018 1.3 M Green Objective 8 added: Commitment to Continual Improvement added. 09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors. 02/01/2020 1.5 M Green C&CCC updated to Pay.UK. Review and re-signed by both Managing Directors. 21/01/2021 1.6 M Green Reviewed and re-signed by both Managing Directors. 26/01/2022 1.7 M Green Reviewed and re-signed by both Managing Directors. 16/02/2022 1.8 M Green Text changes are shown in bold below: All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO). 7 This applies to the requirements of Pay.UK (at the production facility), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function. Reviewed and re-signed by both Managing Directors. 01/04/2022 1.9 M Green Reviewed and updated to the standard format. 06/06/2023 2.0 S Beech Reviewed and re-signed by both Managing Directors. 07/02/2025 2.1 S Beech Reviewed and signed by senior management. 06/01/2026 2.2 S Beech Reviewed and signed by the senior management.",
+     "page": 6,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 48.35
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 47.79
+    }
+   ]
+  },
+  {
+   "keywords": [
+    "report",
+    "breach",
+    "suspected",
+    "line manager",
+    "security event",
+    "notify"
+   ],
+   "n_results": 3,
+   "chunks": [
+    {
+     "id": "datagraphic_policy.pdf_chunk4",
+     "text": "Information Security Policy 5 Document History Date Version Author Description of change 01/11/2011 1.1 M Green Document created. 21/12/2014 1.2 M Green Objectives added. 21/03/2018 1.3 M Green Objective 8 added: Commitment to Continual Improvement added. 09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors. 02/01/2020 1.5 M Green C&CCC updated to Pay.UK. Review and re-signed by both Managing Directors. 21/01/2021 1.6 M Green Reviewed and re-signed by both Managing Directors. 26/01/2022 1.7 M Green Reviewed and re-signed by both Managing Directors. 16/02/2022 1.8 M Green Text changes are shown in bold below: All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO). 7 This applies to the requirements of Pay.UK (at the production facility), and the requirements of legislation such as the Data Protection Act 2018 and the UK GDPR. Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function. Reviewed and re-signed by both Managing Directors. 01/04/2022 1.9 M Green Reviewed and updated to the standard format. 06/06/2023 2.0 S Beech Reviewed and re-signed by both Managing Directors. 07/02/2025 2.1 S Beech Reviewed and signed by senior management. 06/01/2026 2.2 S Beech Reviewed and signed by the senior management.",
+     "page": 6,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 63.36
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk2",
+     "text": "Information Security Policy 3 The purpose of the Policy is to protect Information assets1 from all threats, whether internal or external, deliberate or accidental. The CEO & Managing Director have approved this Information Security Policy. It is the policy of Datagraphic to ensure that: • Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes. • Regulatory and legislative requirements will be met.4 • Business Continuity plans will be in place, maintained and tested.5 • Information Security training will be available to all staff.6 • All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO. 7 • Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only). • Business requirements for the availability of Information and Information systems will be met. • The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation. • All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff. Procedures and policies exist to support the Policy and are maintained as an Information Security Management System (ISMS). It is the responsibility of each staff member to adhere to the Policy. Signed: Signed: Robert Hoon Glyn King Group Managing Director CEO Date: 06/01/2026 The CISO will review this Policy on an annual basis.",
+     "page": 4,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 61.27
+    },
+    {
+     "id": "datagraphic_policy.pdf_chunk1",
+     "text": "Information Security Policy 2 Information Security Policy Objectives 1. Ensure the protection of the confidential data under our control, including personally identifiable Information. 2. Ensure our products and services remain available and secure. 3. Ensure our network infrastructure remains available and secure. 4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines. 5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss. 6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities. 7. Continue to comply with ISO 27001 controls according to our certified Statement of Applicability. 8. Remain committed to the continual improvement of the Information Security Management System (ISMS).",
+     "page": 3,
+     "source": "datagraphic_policy.pdf",
+     "relevance": 54.89
+    }
+   ]
+  }
+ ],
+ "llm": [
+  {
+   "control_id": "5.2",
+   "check_id": "5.2.a",
+   "prompt_sha256": "b78a38c2c6e6d3b3bd7cc6398cb23847c0477c1476b6ee0b246c569e810530fa",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E1\",\n      \"quote\": \"The CEO & Managing Director have approved this Information Security Policy.\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1320,
+   "eval_count": 48,
+   "secs": 6.7
+  },
+  {
+   "control_id": "5.2",
+   "check_id": "5.2.b",
+   "prompt_sha256": "6062646db728a8b96dae16fcb86ebf760850ec6fe8f940f1210a9a9788085a67",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E1\",\n      \"quote\": \"Ensure our products and services remain available and secure.\"\n    },\n    {\n      \"chunk_id\": \"E3\",\n      \"quote\": \"• Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes.\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1317,
+   "eval_count": 106,
+   "secs": 10.3
+  },
+  {
+   "control_id": "5.2",
+   "check_id": "5.2.c",
+   "prompt_sha256": "db3b45be9beca0d8092c62d667e39a9184298b0f18e1a30b15ee7d9d7b42b35b",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E2\",\n      \"quote\": \"Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1313,
+   "eval_count": 51,
+   "secs": 7.0
+  },
+  {
+   "control_id": "5.2",
+   "check_id": "5.2.d",
+   "prompt_sha256": "b94ba70f4ad65a07246897c07dc5127a27e93bb9b49b4be1efe976fb0bafe099",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E1\",\n      \"quote\": \"8. Remain committed to the continual improvement of the Information Security Management System (ISMS).\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1314,
+   "eval_count": 55,
+   "secs": 7.2
+  },
+  {
+   "control_id": "6.2",
+   "check_id": "6.2.a",
+   "prompt_sha256": "e3db33631edc7749b8566d409db2729eab64e882097c320ff7aa71b6ec7e9cf8",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E1\",\n      \"quote\": \"Ensure the protection of the confidential data under our control, including personally identifiable Information.\"\n    },\n    {\n      \"chunk_id\": \"E2\",\n      \"quote\": \"• Confidentiality of Information will be assured.2\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1303,
+   "eval_count": 81,
+   "secs": 8.8
+  },
+  {
+   "control_id": "6.2",
+   "check_id": "6.2.b",
+   "prompt_sha256": "c05a5081243cbc7164fce72c5035a317a98acb20826c107d8628a4fe42c1a74e",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E2\",\n      \"quote\": \"• Availability of Information is ensured as required by the business processes.\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1327,
+   "eval_count": 49,
+   "secs": 6.8
+  },
+  {
+   "control_id": "6.2",
+   "check_id": "6.2.c",
+   "prompt_sha256": "957fc952ad25f58dff8aff49482b13fd114813aa08ec00dbc94993578fb0e28a",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E3\",\n      \"quote\": \"1. Ensure the protection of the confidential data under our control, including personally identifiable Information.\"\n    },\n    {\n      \"chunk_id\": \"E3\",\n      \"quote\": \"6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities.\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1203,
+   "eval_count": 92,
+   "secs": 9.4
+  },
+  {
+   "control_id": "4.3",
+   "check_id": "4.3.a",
+   "prompt_sha256": "d52ed37c42c99600b13bbc253dbecda49ecf3850665ad243c8c131a55599e42d",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E1\",\n      \"quote\": \"A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS).\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1415,
+   "eval_count": 59,
+   "secs": 7.5
+  },
+  {
+   "control_id": "4.3",
+   "check_id": "4.3.b",
+   "prompt_sha256": "3a328860d05da72d402e705a67216c3c15538a884aaff86312850426da6aed82",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E2\",\n      \"quote\": \"Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1322,
+   "eval_count": 51,
+   "secs": 6.9
+  },
+  {
+   "control_id": "4.3",
+   "check_id": "4.3.c",
+   "prompt_sha256": "53815e9258d18e96085cffa71ff9c97e0c13ee226d628ae27e0590afda066e69",
+   "raw": "{\n  \"answer\": \"not_found\",\n  \"citations\": []\n}",
+   "prompt_eval_count": 1189,
+   "eval_count": 17,
+   "secs": 4.8
+  },
+  {
+   "control_id": "4.3",
+   "check_id": "4.3.d",
+   "prompt_sha256": "9f4deb46b811d9077218b014a320bfba68e9fcc17782410c1b1e542aa454f524",
+   "raw": "{\n  \"answer\": \"found\",\n  \"citations\": [\n    {\n      \"chunk_id\": \"E3\",\n      \"quote\": \"Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only).\"\n    }\n  ]\n}",
+   "prompt_eval_count": 1367,
+   "eval_count": 83,
+   "secs": 8.9
+  },
+  {
+   "control_id": "A.5.1",
+   "check_id": null,
+   "prompt_sha256": "742b1c431df5ee043df95a800233b74da41bf8952b43fd4db8d66d6985e28b6d",
+   "raw": "{\n  \"status\": \"Compliant\",\n  \"citations\": [\n    {\"chunk_id\": \"E1\", \"quote\": \"Approved by: Glyn King – CEO Robert Hoon – Group Managing Director\"},\n    {\"chunk_id\": \"E3\", \"quote\": \"The CEO & Managing Director have approved this Information Security Policy.\"},\n    {\"chunk_id\": \"E2\", \"quote\": \"09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors.\"}\n  ],\n  \"gaps\": \"None\",\n  \"recommendation\": \"None\"\n}",
+   "prompt_eval_count": 1698,
+   "eval_count": 124,
+   "secs": 12.5
+  },
+  {
+   "control_id": "A.5.2",
+   "check_id": null,
+   "prompt_sha256": "239fef7f2aa9653e3743069d48e43f1c6a964a957b57c45e517d1cfec858ba76",
+   "raw": "{\n  \"status\": \"Compliant\",\n  \"citations\": [\n    {\"chunk_id\": \"E1\", \"quote\": \"The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation.\"},\n    {\"chunk_id\": \"E1\", \"quote\": \"All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff.\"}\n  ],\n  \"gaps\": \"None\",\n  \"recommendation\": \"None\"\n}",
+   "prompt_eval_count": 1642,
+   "eval_count": 100,
+   "secs": 10.4
+  },
+  {
+   "control_id": "A.5.29",
+   "check_id": null,
+   "prompt_sha256": "107ae262c3765aebd2ec7623505649f47aee33be68e4d6bb3a037ae10f530f74",
+   "raw": "{\n  \"status\": \"Compliant\",\n  \"citations\": [\n    {\"chunk_id\": \"E1\", \"quote\": \"• Business Continuity plans will be in place, maintained and tested.\"},\n    {\"chunk_id\": \"E2\", \"quote\": \"5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss.\"}\n  ],\n  \"gaps\": \"None\",\n  \"recommendation\": \"None\"\n}",
+   "prompt_eval_count": 1636,
+   "eval_count": 98,
+   "secs": 10.2
+  },
+  {
+   "control_id": "A.5.31",
+   "check_id": null,
+   "prompt_sha256": "3575f99184c2d89ab731a1013888092579b4fd12766b949ee76c30d48fec15d6",
+   "raw": "{\n  \"status\": \"Compliant\",\n  \"citations\": [\n    {\"chunk_id\": \"E3\", \"quote\": \"• Regulatory and legislative requirements will be met.\"},\n    {\"chunk_id\": \"E1\", \"quote\": \"4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\"}\n  ],\n  \"gaps\": \"None\",\n  \"recommendation\": \"None\"\n}",
+   "prompt_eval_count": 1455,
+   "eval_count": 88,
+   "secs": 9.4
+  },
+  {
+   "control_id": "A.6.3",
+   "check_id": null,
+   "prompt_sha256": "30094e451f54069e80485176f1c74b6f924e55b0fa2e55d91ee8f970eb774408",
+   "raw": "{\n  \"status\": \"Compliant\",\n  \"citations\": [\n    {\"chunk_id\": \"E1\", \"quote\": \"Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function.\"},\n    {\"chunk_id\": \"E2\", \"quote\": \"Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function.\"}\n  ],\n  \"gaps\": \"None\",\n  \"recommendation\": \"None\"\n}",
+   "prompt_eval_count": 1666,
+   "eval_count": 103,
+   "secs": 10.5
+  },
+  {
+   "control_id": "A.6.8",
+   "check_id": null,
+   "prompt_sha256": "8dc3078376ee043985fb5ade2c3e396c809bca25c43b1c99e89afa3658a8ce4c",
+   "raw": "{\n  \"status\": \"Compliant\",\n  \"citations\": [\n    {\"chunk_id\": \"E1\", \"quote\": \"All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO).\"},\n    {\"chunk_id\": \"E2\", \"quote\": \"All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO.\"}\n  ],\n  \"gaps\": \"None\",\n  \"recommendation\": \"None\"\n}",
+   "prompt_eval_count": 1645,
+   "eval_count": 121,
+   "secs": 12.1
+  }
+ ],
+ "result": {
+  "standard_audited": "ISO 27001",
+  "global_score_percentage": 94.4,
+  "evaluated_count": 9,
+  "not_evaluable_count": 4,
+  "doc_type": "isms_policy",
+  "results": [
+   {
+    "control_id": "5.2",
+    "status": "Compliant",
+    "evidence_found": "\"The CEO & Managing Director have approved this Information Security Policy.\" (datagraphic_policy.pdf, p. 4) | \"Ensure our products and services remain available and secure.\" (datagraphic_policy.pdf, p. 3) | \"• Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes.\" (datagraphic_policy.pdf, p. 4) | \"Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\" (datagraphic_policy.pdf, p. 3) | \"8. Remain committed to the continual improvement of the Information Security Management System (ISMS).\" (datagraphic_policy.pdf, p. 3)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "The CEO & Managing Director have approved this Information Security Policy."
+     },
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "Ensure our products and services remain available and secure."
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+     },
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "8. Remain committed to the continual improvement of the Information Security Management System (ISMS)."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [
+     {
+      "check_id": "5.2.a",
+      "question": "Does the document contain a formal information security policy statement made on behalf of the organization?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "The CEO & Managing Director have approved this Information Security Policy."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "5.2.b",
+      "question": "Does the document include information security objectives, or a framework for setting them?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "Ensure our products and services remain available and secure."
+       },
+       {
+        "chunk_id": "E3",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "• Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "5.2.c",
+      "question": "Does the document include a commitment to satisfy applicable information security requirements?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E2",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "5.2.d",
+      "question": "Does the document include a commitment to continual improvement of the information security management system?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "8. Remain committed to the continual improvement of the Information Security Management System (ISMS)."
+       }
+      ],
+      "evidence_unverified": false
+     }
+    ],
+    "note": ""
+   },
+   {
+    "control_id": "6.2",
+    "status": "Compliant",
+    "evidence_found": "\"Ensure the protection of the confidential data under our control, including personally identifiable Information.\" (datagraphic_policy.pdf, p. 3) | \"• Confidentiality of Information will be assured.2\" (datagraphic_policy.pdf, p. 4) | \"• Availability of Information is ensured as required by the business processes.\" (datagraphic_policy.pdf, p. 4) | \"1. Ensure the protection of the confidential data under our control, including personally identifiable Information.\" (datagraphic_policy.pdf, p. 3) | \"6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities.\" (datagraphic_policy.pdf, p. 3)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "Ensure the protection of the confidential data under our control, including personally identifiable Information."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Confidentiality of Information will be assured.2"
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Availability of Information is ensured as required by the business processes."
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "1. Ensure the protection of the confidential data under our control, including personally identifiable Information."
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [
+     {
+      "check_id": "6.2.a",
+      "question": "Does the document state information security objectives?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "Ensure the protection of the confidential data under our control, including personally identifiable Information."
+       },
+       {
+        "chunk_id": "E2",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "• Confidentiality of Information will be assured.2"
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "6.2.b",
+      "question": "Is at least one objective measurable, i.e. does it have a target value, or a defined indicator or metric?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E2",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "• Availability of Information is ensured as required by the business processes."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "6.2.c",
+      "question": "Does the document state who is responsible for achieving the objectives, or how often progress towards them is evaluated?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E3",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "1. Ensure the protection of the confidential data under our control, including personally identifiable Information."
+       },
+       {
+        "chunk_id": "E3",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities."
+       }
+      ],
+      "evidence_unverified": false
+     }
+    ],
+    "note": ""
+   },
+   {
+    "control_id": "4.3",
+    "status": "Partial",
+    "evidence_found": "\"A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS).\" (datagraphic_policy.pdf, p. 2) | \"Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\" (datagraphic_policy.pdf, p. 3) | \"Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only).\" (datagraphic_policy.pdf, p. 4)",
+    "gaps": "No evidence found for: Does the document identify the physical locations or sites covered by the ISMS?",
+    "recommendation": "List the locations or sites that the ISMS covers.",
+    "risk_level": "Medium",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 2,
+      "quote": "A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS)."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only)."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [
+     {
+      "check_id": "4.3.a",
+      "question": "Does the document state that an ISMS exists, or that the document is part of one?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 2,
+        "quote": "A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS)."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "4.3.b",
+      "question": "Does the document identify the legal entities or organizational units covered by the ISMS?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E2",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "4.3.c",
+      "question": "Does the document identify the physical locations or sites covered by the ISMS?",
+      "found": false,
+      "citations": [],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "4.3.d",
+      "question": "Does the document identify the systems, services or processes covered by the ISMS?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E3",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only)."
+       }
+      ],
+      "evidence_unverified": false
+     }
+    ],
+    "note": ""
+   },
+   {
+    "control_id": "A.5.1",
+    "status": "Compliant",
+    "evidence_found": "\"Approved by: Glyn King – CEO Robert Hoon – Group Managing Director\" (datagraphic_policy.pdf, p. 2) | \"The CEO & Managing Director have approved this Information Security Policy.\" (datagraphic_policy.pdf, p. 4) | \"09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors.\" (datagraphic_policy.pdf, p. 6)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 2,
+      "quote": "Approved by: Glyn King – CEO Robert Hoon – Group Managing Director"
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "The CEO & Managing Director have approved this Information Security Policy."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 6,
+      "quote": "09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.5.2",
+    "status": "Compliant",
+    "evidence_found": "\"The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation.\" (datagraphic_policy.pdf, p. 4) | \"All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff.\" (datagraphic_policy.pdf, p. 4)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation."
+     },
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.5.15",
+    "status": "not_evaluable",
+    "evidence_found": "None",
+    "gaps": "El control aplica a topic_policy; el documento es isms_policy",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": "El control aplica a topic_policy; el documento es isms_policy"
+   },
+   {
+    "control_id": "A.5.24",
+    "status": "not_evaluable",
+    "evidence_found": "None",
+    "gaps": "El control aplica a procedure, topic_policy; el documento es isms_policy",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": "El control aplica a procedure, topic_policy; el documento es isms_policy"
+   },
+   {
+    "control_id": "A.5.29",
+    "status": "Compliant",
+    "evidence_found": "\"• Business Continuity plans will be in place, maintained and tested.\" (datagraphic_policy.pdf, p. 4) | \"5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss.\" (datagraphic_policy.pdf, p. 3)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Business Continuity plans will be in place, maintained and tested."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.5.31",
+    "status": "Compliant",
+    "evidence_found": "\"• Regulatory and legislative requirements will be met.\" (datagraphic_policy.pdf, p. 4) | \"4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\" (datagraphic_policy.pdf, p. 3)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Regulatory and legislative requirements will be met."
+     },
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.6.3",
+    "status": "Compliant",
+    "evidence_found": "\"Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function.\" (datagraphic_policy.pdf, p. 5) | \"Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function.\" (datagraphic_policy.pdf, p. 6)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 5,
+      "quote": "Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 6,
+      "quote": "Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.6.8",
+    "status": "Compliant",
+    "evidence_found": "\"All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO).\" (datagraphic_policy.pdf, p. 6) | \"All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO.\" (datagraphic_policy.pdf, p. 4)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 6,
+      "quote": "All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO)."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.8.5",
+    "status": "not_evaluable",
+    "evidence_found": "None",
+    "gaps": "El control aplica a topic_policy, procedure; el documento es isms_policy",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": "El control aplica a topic_policy, procedure; el documento es isms_policy"
+   },
+   {
+    "control_id": "A.8.8",
+    "status": "not_evaluable",
+    "evidence_found": "None",
+    "gaps": "El control aplica a topic_policy, procedure; el documento es isms_policy",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": "El control aplica a topic_policy, procedure; el documento es isms_policy"
+   }
+  ],
+  "findings": [
+   {
+    "control_id": "5.2",
+    "status": "Compliant",
+    "evidence_found": "\"The CEO & Managing Director have approved this Information Security Policy.\" (datagraphic_policy.pdf, p. 4) | \"Ensure our products and services remain available and secure.\" (datagraphic_policy.pdf, p. 3) | \"• Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes.\" (datagraphic_policy.pdf, p. 4) | \"Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\" (datagraphic_policy.pdf, p. 3) | \"8. Remain committed to the continual improvement of the Information Security Management System (ISMS).\" (datagraphic_policy.pdf, p. 3)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "The CEO & Managing Director have approved this Information Security Policy."
+     },
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "Ensure our products and services remain available and secure."
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+     },
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "8. Remain committed to the continual improvement of the Information Security Management System (ISMS)."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [
+     {
+      "check_id": "5.2.a",
+      "question": "Does the document contain a formal information security policy statement made on behalf of the organization?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "The CEO & Managing Director have approved this Information Security Policy."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "5.2.b",
+      "question": "Does the document include information security objectives, or a framework for setting them?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "Ensure our products and services remain available and secure."
+       },
+       {
+        "chunk_id": "E3",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "• Information will be protected against unauthorised access • Confidentiality of Information will be assured.2 • Integrity of Information will be maintained.3 • Availability of Information is ensured as required by the business processes."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "5.2.c",
+      "question": "Does the document include a commitment to satisfy applicable information security requirements?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E2",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "5.2.d",
+      "question": "Does the document include a commitment to continual improvement of the information security management system?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "8. Remain committed to the continual improvement of the Information Security Management System (ISMS)."
+       }
+      ],
+      "evidence_unverified": false
+     }
+    ],
+    "note": ""
+   },
+   {
+    "control_id": "6.2",
+    "status": "Compliant",
+    "evidence_found": "\"Ensure the protection of the confidential data under our control, including personally identifiable Information.\" (datagraphic_policy.pdf, p. 3) | \"• Confidentiality of Information will be assured.2\" (datagraphic_policy.pdf, p. 4) | \"• Availability of Information is ensured as required by the business processes.\" (datagraphic_policy.pdf, p. 4) | \"1. Ensure the protection of the confidential data under our control, including personally identifiable Information.\" (datagraphic_policy.pdf, p. 3) | \"6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities.\" (datagraphic_policy.pdf, p. 3)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "Ensure the protection of the confidential data under our control, including personally identifiable Information."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Confidentiality of Information will be assured.2"
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Availability of Information is ensured as required by the business processes."
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "1. Ensure the protection of the confidential data under our control, including personally identifiable Information."
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [
+     {
+      "check_id": "6.2.a",
+      "question": "Does the document state information security objectives?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "Ensure the protection of the confidential data under our control, including personally identifiable Information."
+       },
+       {
+        "chunk_id": "E2",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "• Confidentiality of Information will be assured.2"
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "6.2.b",
+      "question": "Is at least one objective measurable, i.e. does it have a target value, or a defined indicator or metric?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E2",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "• Availability of Information is ensured as required by the business processes."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "6.2.c",
+      "question": "Does the document state who is responsible for achieving the objectives, or how often progress towards them is evaluated?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E3",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "1. Ensure the protection of the confidential data under our control, including personally identifiable Information."
+       },
+       {
+        "chunk_id": "E3",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "6. Minimise the risk of security incidents by ensuring our employees understand their Information Security responsibilities."
+       }
+      ],
+      "evidence_unverified": false
+     }
+    ],
+    "note": ""
+   },
+   {
+    "control_id": "4.3",
+    "status": "Partial",
+    "evidence_found": "\"A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS).\" (datagraphic_policy.pdf, p. 2) | \"Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\" (datagraphic_policy.pdf, p. 3) | \"Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only).\" (datagraphic_policy.pdf, p. 4)",
+    "gaps": "No evidence found for: Does the document identify the physical locations or sites covered by the ISMS?",
+    "recommendation": "List the locations or sites that the ISMS covers.",
+    "risk_level": "Medium",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 2,
+      "quote": "A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS)."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only)."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [
+     {
+      "check_id": "4.3.a",
+      "question": "Does the document state that an ISMS exists, or that the document is part of one?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E1",
+        "source": "datagraphic_policy.pdf",
+        "page": 2,
+        "quote": "A controlled document forming part of the Datagraphic ISO 27001 Information Security Management System (ISMS)."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "4.3.b",
+      "question": "Does the document identify the legal entities or organizational units covered by the ISMS?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E2",
+        "source": "datagraphic_policy.pdf",
+        "page": 3,
+        "quote": "Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+       }
+      ],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "4.3.c",
+      "question": "Does the document identify the physical locations or sites covered by the ISMS?",
+      "found": false,
+      "citations": [],
+      "evidence_unverified": false
+     },
+     {
+      "check_id": "4.3.d",
+      "question": "Does the document identify the systems, services or processes covered by the ISMS?",
+      "found": true,
+      "citations": [
+       {
+        "chunk_id": "E3",
+        "source": "datagraphic_policy.pdf",
+        "page": 4,
+        "quote": "Datagraphic has an Information Security Management System (ISMS) to address the requirements of ISO 27001 and Pay.UK Standard 55 control objectives.* (*Standard 55 applies at the Datagraphic production facility only)."
+       }
+      ],
+      "evidence_unverified": false
+     }
+    ],
+    "note": ""
+   },
+   {
+    "control_id": "A.5.1",
+    "status": "Compliant",
+    "evidence_found": "\"Approved by: Glyn King – CEO Robert Hoon – Group Managing Director\" (datagraphic_policy.pdf, p. 2) | \"The CEO & Managing Director have approved this Information Security Policy.\" (datagraphic_policy.pdf, p. 4) | \"09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors.\" (datagraphic_policy.pdf, p. 6)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 2,
+      "quote": "Approved by: Glyn King – CEO Robert Hoon – Group Managing Director"
+     },
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "The CEO & Managing Director have approved this Information Security Policy."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 6,
+      "quote": "09/01/2019 1.4 M Green Reviewed and re-signed by both Managing Directors."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.5.2",
+    "status": "Compliant",
+    "evidence_found": "\"The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation.\" (datagraphic_policy.pdf, p. 4) | \"All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff.\" (datagraphic_policy.pdf, p. 4)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "The CISO has responsibility for maintaining the Policy and providing advice and guidance on its implementation."
+     },
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "All managers are directly responsible for implementing the Policy within their business areas and for adherence by their staff."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.5.15",
+    "status": "not_evaluable",
+    "evidence_found": "None",
+    "gaps": "El control aplica a topic_policy; el documento es isms_policy",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": "El control aplica a topic_policy; el documento es isms_policy"
+   },
+   {
+    "control_id": "A.5.24",
+    "status": "not_evaluable",
+    "evidence_found": "None",
+    "gaps": "El control aplica a procedure, topic_policy; el documento es isms_policy",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": "El control aplica a procedure, topic_policy; el documento es isms_policy"
+   },
+   {
+    "control_id": "A.5.29",
+    "status": "Compliant",
+    "evidence_found": "\"• Business Continuity plans will be in place, maintained and tested.\" (datagraphic_policy.pdf, p. 4) | \"5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss.\" (datagraphic_policy.pdf, p. 3)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Business Continuity plans will be in place, maintained and tested."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "5. Maintain controls that protect Information and Information systems against theft, abuse and other forms of harm and loss."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.5.31",
+    "status": "Compliant",
+    "evidence_found": "\"• Regulatory and legislative requirements will be met.\" (datagraphic_policy.pdf, p. 4) | \"4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines.\" (datagraphic_policy.pdf, p. 3)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E3",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "• Regulatory and legislative requirements will be met."
+     },
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 3,
+      "quote": "4. Ensure our continued compliance with current UK laws, regulations and best practice guidelines."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.6.3",
+    "status": "Compliant",
+    "evidence_found": "\"Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function.\" (datagraphic_policy.pdf, p. 5) | \"Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function.\" (datagraphic_policy.pdf, p. 6)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 5,
+      "quote": "Staff will receive Information Security Awareness training upon inception and regularly after that, as appropriate to their job function."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 6,
+      "quote": "Staff will receive Information Security training upon inception and regularly after that, as appropriate to their job function."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.6.8",
+    "status": "Compliant",
+    "evidence_found": "\"All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO).\" (datagraphic_policy.pdf, p. 6) | \"All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO.\" (datagraphic_policy.pdf, p. 4)",
+    "gaps": "None",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [
+     {
+      "chunk_id": "E1",
+      "source": "datagraphic_policy.pdf",
+      "page": 6,
+      "quote": "All breaches of Information Security, actual or suspected, must be reported to line managers and investigated, if appropriate, by the Chief Information Security Officer (CISO)."
+     },
+     {
+      "chunk_id": "E2",
+      "source": "datagraphic_policy.pdf",
+      "page": 4,
+      "quote": "All Information Security breaches, actual or suspected, must be reported to line managers and investigated, if appropriate, by the CISO."
+     }
+    ],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": ""
+   },
+   {
+    "control_id": "A.8.5",
+    "status": "not_evaluable",
+    "evidence_found": "None",
+    "gaps": "El control aplica a topic_policy, procedure; el documento es isms_policy",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": "El control aplica a topic_policy, procedure; el documento es isms_policy"
+   },
+   {
+    "control_id": "A.8.8",
+    "status": "not_evaluable",
+    "evidence_found": "None",
+    "gaps": "El control aplica a topic_policy, procedure; el documento es isms_policy",
+    "recommendation": "None",
+    "risk_level": "None",
+    "citations": [],
+    "evidence_unverified": false,
+    "checks": [],
+    "note": "El control aplica a topic_policy, procedure; el documento es isms_policy"
+   }
+  ]
+ }
+}

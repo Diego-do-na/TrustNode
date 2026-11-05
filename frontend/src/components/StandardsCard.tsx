@@ -1,6 +1,6 @@
 import type { AuditResponse } from "../api/client";
 import { STANDARD_DEFINITIONS } from "../data/standards";
-import { controlProgress, scoreLevel } from "../utils/auditMetrics";
+import { controlProgress, docTypeLabel, formatScore, scoreLevel } from "../utils/auditMetrics";
 
 interface StandardsCardProps {
   auditResults: AuditResponse[];
@@ -38,10 +38,12 @@ export function StandardsCard({ auditResults }: StandardsCardProps) {
       {hasData ? (
         <div className="standards-grid">
           {auditResults.map((result) => {
-            const score = Math.round(result.global_score_percentage);
-            const level = scoreLevel(result.global_score_percentage);
+            const raw = result.global_score_percentage;
+            const score = raw === null ? 0 : Math.round(raw);
+            const level = raw === null ? "mid" : scoreLevel(raw);
             const domain = STANDARD_DEFINITIONS[result.standard_audited]?.domain ?? "";
-            const { assessed, total } = controlProgress(result);
+            const { total } = controlProgress(result);
+            const assessed = result.evaluated_count;
             const progressPct = total > 0 ? Math.round((assessed / total) * 100) : 0;
 
             return (
@@ -55,7 +57,9 @@ export function StandardsCard({ auditResults }: StandardsCardProps) {
                     <span className={`std-dot ${level}`} />
                     {result.standard_audited}
                   </div>
-                  <div className="standard-desc">{domain}</div>
+                  <div className="standard-desc">
+                    {[domain, docTypeLabel(result.doc_type)].filter(Boolean).join(" · ")}
+                  </div>
                   <div className="standard-pill-checklist">
                     <div className="standard-pill-checklist-track">
                       <div
@@ -64,13 +68,13 @@ export function StandardsCard({ auditResults }: StandardsCardProps) {
                       />
                     </div>
                     <span className="standard-pill-checklist-label">
-                      {assessed}/{total} controls
+                      {result.evaluated_count} evaluated, {result.not_evaluable_count} not evaluable
                     </span>
                   </div>
                 </div>
                 <div className="standard-pill-score-wrap">
                   <PillScoreArc score={score} level={level} />
-                  <div className={`standard-score ${level}`}>{score}%</div>
+                  <div className={`standard-score ${level}`}>{formatScore(raw)}</div>
                 </div>
               </button>
             );

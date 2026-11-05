@@ -8,11 +8,30 @@ export interface StatusResponse {
   chroma: Record<string, unknown>;
 }
 
+import type { DocType } from "../data/standards";
+export type { DocType };
+
+/** Runtime list of valid document types (kept in sync with the DocType union). */
+export const DOC_TYPES: readonly DocType[] = ["isms_policy", "topic_policy", "procedure", "soa"];
+
+export interface Check {
+  id: string;
+  question: string;
+  hint?: string;
+  /** Case-insensitive substrings; a verified quote must contain at least one. */
+  anchors?: string[];
+  /** Fixed remediation text shown when the check is not met. */
+  recommendation?: string;
+}
+
 export interface ControlSchema {
   control_id: string;
   title: string;
   description: string;
   search_keywords: string[];
+  applies_to?: DocType[];
+  legacy_id?: string;
+  checks?: Check[];
 }
 
 export interface AuditRequest {
@@ -20,20 +39,45 @@ export interface AuditRequest {
   domain: string;
   controls: ControlSchema[];
   language?: string;
+  doc_type?: DocType;
+}
+
+export interface Citation {
+  chunk_id: string;
+  source: string;
+  page: number | null;
+  quote: string;
+}
+
+export interface CheckResult {
+  check_id: string;
+  question: string;
+  found: boolean;
+  citations?: Citation[];
+  evidence_unverified?: boolean;
 }
 
 export interface AuditResult {
   control_id: string;
-  status: "Compliant" | "Non-Compliant" | "Partial";
+  status: "Compliant" | "Non-Compliant" | "Partial" | "not_evaluable";
   evidence_found: string;
   gaps: string;
   recommendation: string;
   risk_level: "High" | "Medium" | "Low" | "None";
+  citations?: Citation[];
+  evidence_unverified?: boolean;
+  checks?: CheckResult[];
+  note?: string;
 }
 
 export interface AuditResponse {
   standard_audited: string;
-  global_score_percentage: number;
+  /** null when no control was evaluable (rendered as "N/A"). */
+  global_score_percentage: number | null;
+  evaluated_count: number;
+  not_evaluable_count: number;
+  /** Absent in reports saved by older versions. */
+  doc_type?: DocType;
   results: AuditResult[];
   findings: AuditResult[];
 }
@@ -71,7 +115,7 @@ export async function ingestFiles(files: File[]): Promise<IngestResponse> {
 
 export interface SummaryRequest {
   standard_audited: string;
-  global_score_percentage: number;
+  global_score_percentage: number | null;
   results: AuditResult[];
   language?: string;
 }
@@ -89,12 +133,16 @@ export interface ExportFinding {
   gaps: string;
   recommendation: string;
   risk_level: string;
+  citations?: Citation[];
+  evidence_unverified?: boolean;
+  checks?: CheckResult[];
 }
 
 export interface ExportPdfRequest {
   standard_name: string;
-  compliance_score: number;
+  compliance_score: number | null;
   findings: ExportFinding[];
+  doc_type?: DocType | null;
   executive_summary?: string | null;
   generated_at?: string | null;
 }

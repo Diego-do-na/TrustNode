@@ -2,8 +2,9 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { clearDb, ingestFiles, runAudit } from "../api/client";
 import { ASSESSMENT_STANDARDS, STANDARD_DEFINITIONS } from "../data/standards";
 import { formatBytes, useAppState } from "../context/AppStateContext";
+import { weightedScore } from "../utils/scoring";
 import { PixelAnimation } from "./PixelAnimation";
-import type { AuditRequest, AuditResponse } from "../api/client";
+import type { AuditRequest, AuditResponse, DocType } from "../api/client";
 
 interface UploadModalProps {
   open: boolean;
@@ -28,6 +29,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
     () => new Set(["ISO 27001", "ISO 9001"]),
   );
   const [reportLang, setReportLang] = useState("English");
+  const [docType, setDocType] = useState<DocType>("isms_policy");
   const [phase, setPhase] = useState<Phase>("idle");
   const [error, setError] = useState<string | null>(null);
   const [auditProgress, setAuditProgress] = useState({ current: 0, total: 0, standard: "" });
@@ -133,18 +135,14 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
         setAuditProgress({ current: i + 1, total: standardNames.length, standard: name });
         const def = standardDefinitionFor(name);
         if (!def) continue;
-        const result = await runAudit({ ...def, language: reportLang });
+        const result = await runAudit({ ...def, language: reportLang, doc_type: docType });
         results.push(result);
       }
 
       // 5. Save the report so it shows up in the Reports tab.
       const documentNames = filesToIngest.map((f) => f.name);
-      const avgScore =
-        results.length > 0
-          ? Math.round(
-              results.reduce((sum, r) => sum + r.global_score_percentage, 0) / results.length,
-            )
-          : 0;
+      const aggregate = weightedScore(results);
+      const avgScore = aggregate === null ? null : Math.round(aggregate);
       recordReport({
         name: `Audit · ${standardNames.join(", ")}`,
         standards: standardNames,
@@ -152,6 +150,7 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
         results,
         documentNames,
         language: reportLang,
+        docType,
       });
 
       onAuditComplete(results, reportLang);
@@ -302,6 +301,19 @@ export function UploadModal({ open, onClose, onAuditComplete }: UploadModalProps
             </button>
           ))}
         </div>
+
+        <div className="modal-section-label">Document type</div>
+        <select
+          value={docType}
+          onChange={(e) => setDocType(e.target.value as DocType)}
+          disabled={isLoading}
+          className="modal-select"
+        >
+          <option value="isms_policy">ISMS policy (high-level)</option>
+          <option value="topic_policy">Topic-specific policy</option>
+          <option value="procedure">Procedure</option>
+          <option value="soa">Statement of Applicability</option>
+        </select>
 
         <div className="modal-section-label">Report language</div>
         <select

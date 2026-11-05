@@ -2,7 +2,7 @@ import { useRef, useState } from "react";
 import { ASSESSMENT_STANDARDS } from "../data/standards";
 import { useTheme } from "../context/ThemeContext";
 import { useAppState } from "../context/AppStateContext";
-import type { AuditRequest, ControlSchema } from "../api/client";
+import { DOC_TYPES, type AuditRequest, type Check, type ControlSchema, type DocType } from "../api/client";
 
 function validateStandardJson(raw: unknown): AuditRequest {
   if (!raw || typeof raw !== "object") {
@@ -38,12 +38,60 @@ function validateStandardJson(raw: unknown): AuditRequest {
     const keywords = Array.isArray(rec.search_keywords)
       ? rec.search_keywords.filter((k): k is string => typeof k === "string")
       : [];
-    return {
+    const control: ControlSchema = {
       control_id: rec.control_id,
       title: rec.title,
       description: rec.description,
       search_keywords: keywords,
     };
+    if (rec.applies_to !== undefined && rec.applies_to !== null) {
+      if (!Array.isArray(rec.applies_to)) {
+        throw new Error(`controls[${idx}].applies_to must be an array of: ${DOC_TYPES.join(", ")}.`);
+      }
+      const invalid = rec.applies_to.filter((v) => !DOC_TYPES.includes(v as DocType));
+      if (invalid.length > 0) {
+        throw new Error(
+          `controls[${idx}].applies_to has invalid value(s) ${JSON.stringify(invalid)}; allowed: ${DOC_TYPES.join(", ")}.`,
+        );
+      }
+      control.applies_to = rec.applies_to as DocType[];
+    }
+    if (rec.checks !== undefined && rec.checks !== null) {
+      if (!Array.isArray(rec.checks) || rec.checks.length === 0) {
+        throw new Error(`controls[${idx}].checks must be a non-empty array when present.`);
+      }
+      const seen = new Set<string>();
+      control.checks = rec.checks.map((ck, j) => {
+        const c = (ck ?? {}) as Record<string, unknown>;
+        if (typeof c.id !== "string" || !c.id.trim()) {
+          throw new Error(`controls[${idx}].checks[${j}].id must be a non-empty string.`);
+        }
+        if (seen.has(c.id)) {
+          throw new Error(`controls[${idx}].checks[${j}].id "${c.id}" is duplicated.`);
+        }
+        seen.add(c.id);
+        if (typeof c.question !== "string" || !c.question.trim()) {
+          throw new Error(`controls[${idx}].checks[${j}].question must be a non-empty string.`);
+        }
+        const out: Check = { id: c.id, question: c.question };
+        if (typeof c.hint === "string") out.hint = c.hint;
+        if (typeof c.recommendation === "string") out.recommendation = c.recommendation;
+        if (c.anchors !== undefined && c.anchors !== null) {
+          if (!Array.isArray(c.anchors) || !c.anchors.every((a) => typeof a === "string" && a.trim())) {
+            throw new Error(`controls[${idx}].checks[${j}].anchors must be an array of non-empty strings.`);
+          }
+          out.anchors = c.anchors as string[];
+        }
+        return out;
+      });
+    }
+    if (rec.legacy_id !== undefined && rec.legacy_id !== null) {
+      if (typeof rec.legacy_id !== "string") {
+        throw new Error(`controls[${idx}].legacy_id must be a string.`);
+      }
+      control.legacy_id = rec.legacy_id;
+    }
+    return control;
   });
 
   return {
