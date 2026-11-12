@@ -1,0 +1,17 @@
+{
+  "name": "datagraphic_isms",
+  "pdf": "../../tests/fixtures/datagraphic_policy.pdf",
+  "standard": "ISO 27001",
+  "doc_type": "isms_policy",
+  "acceptable": {
+    "5.2": ["Compliant"], "A.5.2": ["Compliant"], "A.5.29": ["Compliant"],
+    "A.5.31": ["Compliant"], "A.6.3": ["Compliant"],
+    "6.2": ["Partial"], "4.3": ["Partial"],
+    "A.5.1": ["Compliant", "Partial"], "A.6.8": ["Compliant", "Partial"],
+    "A.5.15": ["not_evaluable"], "A.5.24": ["not_evaluable"],
+    "A.8.5": ["not_evaluable"], "A.8.8": ["not_evaluable"]
+  },
+  "forbidden_terms": ["multi-factor", "multifactor", "multi factor"],
+  "forbidden_words": ["mfa"],
+  "notes": "Estados revisados para la politica publica de Datagraphic (v2.2, 7 paginas) auditada como isms_policy. Ver trustnode_handoff_prompt seccion 3."
+}

@@ -1,2 +1,6 @@
 frontend/node_modules/
 backend/chroma_db/
+__pycache__/
+.venv/
+backend/.venv/
+backend/bench/results/
