@@ -54,6 +54,7 @@ class CheckResult(BaseModel):
     found: bool = Field(description="True only if at least one citation was verified against the cited fragment.")
     citations: list[Citation] = Field(default_factory=list)
     evidence_unverified: bool = Field(default=False, description="The model said 'found' but no quote could be verified.")
+    judge_rejected: bool = Field(default=False, description="Quotes were verified but the second-pass judge confirmed none of them.")
 
 
 class AuditResult(BaseModel):

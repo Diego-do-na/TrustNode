@@ -36,7 +36,11 @@ def main() -> None:
     ap.add_argument("--pdf", default=str(HERE / "fixtures" / "datagraphic_policy.pdf"))
     ap.add_argument("--standard", default="ISO 27001")
     ap.add_argument("--doc-type", default="isms_policy")
+    ap.add_argument("--verify", default=evaluator.VERIFY_MODE, choices=["none", "judge"])
+    ap.add_argument("--model", default=evaluator.OLLAMA_MODEL)
     args = ap.parse_args()
+    evaluator.VERIFY_MODE = args.verify
+    evaluator.OLLAMA_MODEL = args.model
 
     evaluator.parse_retrieval_mode(args.mode)
     evaluator.CHECK_RETRIEVAL = args.mode
@@ -80,7 +84,7 @@ def main() -> None:
     digest = None
     try:
         tags = httpx.get("http://localhost:11434/api/tags", timeout=10).json()["models"]
-        digest = next((m["digest"][:12] for m in tags if m["name"].startswith(evaluator.OLLAMA_MODEL)), None)
+        digest = next((m["digest"][:12] for m in tags if m["name"] in (evaluator.OLLAMA_MODEL, f"{evaluator.OLLAMA_MODEL}:latest")), None)
     except Exception:  # noqa: BLE001
         pass
 
@@ -94,7 +98,7 @@ def main() -> None:
         "meta": {
             "recorded_at": datetime.now(timezone.utc).isoformat(timespec="seconds"),
             "model": evaluator.OLLAMA_MODEL, "model_digest": digest,
-            "options": evaluator.OLLAMA_OPTIONS, "retrieval_mode": args.mode,
+            "options": evaluator.OLLAMA_OPTIONS, "retrieval_mode": args.mode, "verify": args.verify,
             "document": pdf.name, "standard": args.standard, "doc_type": args.doc_type,
             "total_secs": total, "llm_calls": len(llm),
         },

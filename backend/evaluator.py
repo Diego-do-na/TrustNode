@@ -47,7 +47,8 @@ logger = logging.getLogger(__name__)
 # ---------------------------------------------------------------------------
 
 OLLAMA_URL = "http://localhost:11434/api/generate"
-OLLAMA_MODEL = "llama3.1"
+# Overridable so the same code can be benchmarked with other local models (default unchanged).
+OLLAMA_MODEL = os.environ.get("TRUSTNODE_MODEL", "llama3.1")
 OLLAMA_TIMEOUT = 120  # seconds
 
 # Single place to tune audit inference. Deterministic by default; override with
@@ -58,7 +59,17 @@ OLLAMA_OPTIONS: dict = {
     "seed": int(os.environ.get("TRUSTNODE_SEED", "42")),
     "num_ctx": int(os.environ.get("TRUSTNODE_NUM_CTX", "6144")),
 }
+# Optional cap on generated tokens (answers are short JSON). Unset = Ollama default.
+if os.environ.get("TRUSTNODE_NUM_PREDICT"):
+    OLLAMA_OPTIONS["num_predict"] = int(os.environ["TRUSTNODE_NUM_PREDICT"])
 
+# Optional observer of every raw Ollama /api/generate response (timings, token counts).
+# Used by the benchmark; None in production.
+OLLAMA_STATS_HOOK = None
+
+
+# Second-pass verification of "found" checks: "none" or "judge" (see JUDGE_SYSTEM_PROMPT).
+VERIFY_MODE = os.environ.get("TRUSTNODE_VERIFY", "none")
 
 # Retrieval strategy for controls that define `checks`:
 #   "control_k<N>"   one retrieval per control (control keywords), top N chunks shared by all its checks
@@ -147,6 +158,26 @@ RULES — follow without exception:
    When the answer is "not_found", "citations" must be [].
 """.strip()
 
+# Second pass for checks ("variant A" of tests/tools/judge_probe.py, text unchanged): the
+# judge sees ONLY one verified quote and the condition, and answers yes/no. A check stays
+# "found" only if at least one of its quotes is confirmed. Enabled by TRUSTNODE_VERIFY=judge.
+JUDGE_SYSTEM_PROMPT = """
+You judge whether ONE quoted passage, taken entirely by itself, satisfies ONE condition.
+You see only the passage and the condition.
+
+RULES:
+1. Answer "yes" only if the passage explicitly states what the condition asks for.
+2. Being on the same topic is not enough. A passage that is more general, weaker, or about
+   something adjacent does not satisfy the condition. Examples from other domains:
+   - Condition: "Does the document state a retention period for personal data?"
+     Passage: "Personal data is kept only as long as necessary."  -> "no"
+   - Condition: "Does the document name who investigates workplace accidents?"
+     Passage: "The Health and Safety Manager investigates every workplace accident." -> "yes"
+3. A paraphrase with the same meaning is acceptable; an inference is not.
+4. If you are unsure, answer "no".
+5. Respond with a single valid JSON object and NOTHING ELSE: {"verdict": "yes" | "no"}
+""".strip()
+
 STRICT_CHECK_RETRY_NOTICE = (
     "STRICT RETRY: your previous answer said \"found\" but no quote could be found verbatim "
     "(and, where applicable, containing the required term) in the fragment you cited. Either "
@@ -184,6 +215,17 @@ class LLMCheckAnswer(BaseModel):
     @classmethod
     def _norm_answer(cls, v):
         return str(v).strip().lower().replace(" ", "_").replace("-", "_") if v is not None else v
+
+
+class LLMJudgeVerdict(BaseModel):
+    """Raw answer of the second-pass judge."""
+
+    verdict: Literal["yes", "no"]
+
+    @field_validator("verdict", mode="before")
+    @classmethod
+    def _norm_verdict(cls, v):
+        return str(v).strip().lower() if v is not None else v
 
 
 class AuditResult(BaseModel):
@@ -242,11 +284,12 @@ def _fuzzy_contains(needle: str, haystack: str, threshold: float = FUZZY_THRESHO
     return False
 
 
-def verify_quote(quote: str, chunk_text: str) -> bool:
+def verify_quote(quote: str, chunk_text: str, fuzzy: bool = True) -> bool:
     """True if *quote* is (after normalisation) a substring of *chunk_text*.
 
-    Falls back to a punctuation/space-insensitive comparison and, only for quotes of
-    at least FUZZY_MIN_QUOTE_LEN characters, to a fuzzy match >= FUZZY_THRESHOLD.
+    Falls back to a punctuation/space-insensitive comparison and, only when ``fuzzy`` is
+    set and the quote has at least FUZZY_MIN_QUOTE_LEN characters, to a fuzzy match
+    >= FUZZY_THRESHOLD.
     """
     nq = normalize_text(quote)
     nc = normalize_text(chunk_text)
@@ -257,7 +300,7 @@ def verify_quote(quote: str, chunk_text: str) -> bool:
     cq = _compact(nq)
     if cq and cq in _compact(nc):
         return True
-    if len(nq) >= FUZZY_MIN_QUOTE_LEN:
+    if fuzzy and len(nq) >= FUZZY_MIN_QUOTE_LEN:
         return _fuzzy_contains(nq, nc)
     return False
 
@@ -288,12 +331,28 @@ def verify_citations(
             )
             continue
         chunk = chunks[idx - 1]
-        if not verify_quote(c.quote, chunk["text"]):
-            logger.warning(
-                "verify_citations[%s]: discarded citation — quote not found in E%d (quote=%.80r)",
-                control_id, idx, c.quote,
+        if not verify_quote(c.quote, chunk["text"], fuzzy=False):
+            # Not exact in the cited chunk. Before accepting a fuzzy match there, look for an
+            # EXACT match in another retrieved chunk: the same sentence can appear on two
+            # pages in slightly different wording, and the page must follow the real text.
+            other = next(
+                (i for i, ch in enumerate(chunks, start=1)
+                 if i != idx and verify_quote(c.quote, ch["text"], fuzzy=False)),
+                None,
             )
-            continue
+            if other is not None:
+                logger.warning(
+                    "verify_citations[%s]: quote not exact in E%d but exact in E%d — reassigned",
+                    control_id, idx, other,
+                )
+                idx = other
+                chunk = chunks[idx - 1]
+            elif not verify_quote(c.quote, chunk["text"]):
+                logger.warning(
+                    "verify_citations[%s]: discarded citation — quote not found in E%d (quote=%.80r)",
+                    control_id, idx, c.quote,
+                )
+                continue
         page = chunk.get("page")
         verified.append(Citation(
             chunk_id=f"E{idx}",
@@ -392,7 +451,10 @@ def _call_ollama(prompt: str) -> str:
     with httpx.Client(timeout=OLLAMA_TIMEOUT) as client:
         response = client.post(OLLAMA_URL, json=payload)
         response.raise_for_status()
-    return response.json()["response"]
+    data = response.json()
+    if OLLAMA_STATS_HOOK is not None:
+        OLLAMA_STATS_HOOK(data, prompt)
+    return data["response"]
 
 
 def _ask_llm(
@@ -508,6 +570,32 @@ def build_check_message(standard_name: str, control: dict, check: dict, chunks: 
     )
 
 
+def build_judge_message(control: dict, check: dict, quote: str) -> str:
+    """User part of the judge prompt. The ID lines only identify the call (cassettes)."""
+    return (
+        f"CONTROL ID: {control['control_id']}\n"
+        f"CHECK ID: {check['id']}\n\n"
+        f"CONDITION: {check['question']}\n"
+        f'PASSAGE: "{quote}"\n\n'
+        "Does the passage, by itself, satisfy the condition? Respond in JSON."
+    )
+
+
+def judge_citations(control: dict, check: dict, citations: list[Citation]) -> list[Citation]:
+    """Keep the citations the judge confirms. A failed judge call counts as "no"."""
+    label = f"{control['control_id']}/{check['id']}"
+    kept: list[Citation] = []
+    for c in citations:
+        v = _ask_llm(build_judge_message(control, check, c.quote), label,
+                     system_prompt=JUDGE_SYSTEM_PROMPT, model=LLMJudgeVerdict)
+        if v is not None and v.verdict == "yes":
+            kept.append(c)
+        else:
+            logger.warning("judge[%s]: rejected citation (verdict=%s, quote=%.80r)",
+                           label, None if v is None else v.verdict, c.quote)
+    return kept
+
+
 def apply_anchors(
     citations: list[Citation],
     anchors: list[str] | None,
@@ -579,12 +667,19 @@ def _evaluate_check(
             logger.warning("evaluate_check[%s]: still unverifiable — treated as not_found", label)
             unverified = True
 
+    judge_rejected = False
+    if VERIFY_MODE == "judge" and verified:
+        confirmed = judge_citations(control, check, verified)
+        judge_rejected = not confirmed
+        verified = confirmed
+
     return CheckResult(
         check_id=check["id"],
         question=check["question"],
         found=bool(verified),
         citations=verified,
         evidence_unverified=unverified,
+        judge_rejected=judge_rejected,
     ), False
 
 
@@ -629,9 +724,12 @@ def evaluate_checked_control(standard_name: str, control: dict) -> dict:
     recs = [by_id[r.check_id].get("recommendation") for r in missing]
     recs = [x for x in recs if x]
     n_unverified = sum(1 for r in results if r.evidence_unverified)
+    n_rejected = sum(1 for r in results if r.judge_rejected)
     notes = []
     if n_unverified:
         notes.append(f"sin evidencia verificable en {n_unverified} check(s)")
+    if n_rejected:
+        notes.append(f"el verificador rechazó la evidencia de {n_rejected} check(s)")
     if errors:
         notes.append(f"error del LLM en {errors} check(s)")
 

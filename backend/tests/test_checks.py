@@ -1,5 +1,7 @@
 """Unit tests for the atomic-checks flow (LLM and retrieval mocked)."""
 import json
+import re
+from pathlib import Path
 
 import pytest
 
@@ -8,6 +10,8 @@ from evaluator import apply_anchors, derive_status, parse_retrieval_mode
 from schemas import AuditRequest, Citation
 
 from standards_loader import load_standard, node_available
+
+PDF = Path(__file__).parent / "fixtures" / "datagraphic_policy.pdf"
 
 CHUNK_A = {"id": "d_chunk0", "source": "doc.pdf", "page": 2, "relevance": 70.0,
            "text": "We commit to continual improvement of the ISMS. Objectives are reviewed yearly."}
@@ -182,16 +186,123 @@ def test_run_audit_mixes_checked_and_legacy_controls(monkeypatch):
     assert resp.global_score_percentage == 75.0
 
 
+STAGE1 = {
+    "5.2": ["5.2.a", "5.2.b", "5.2.c", "5.2.d"],
+    "6.2": ["6.2.a", "6.2.b", "6.2.c"],
+    "4.3": ["4.3.a", "4.3.b", "4.3.c", "4.3.d"],
+}
+STAGE2 = ["A.5.1", "A.5.2", "A.5.15", "A.5.24", "A.5.29", "A.5.31", "A.6.3", "A.6.8", "A.8.5", "A.8.8"]
+
+
 @pytest.mark.skipif(not node_available(), reason="node not available")
-def test_iso27001_definition_has_checks_only_on_the_three_controls():
+def test_iso27001_every_control_defines_checks():
     std = load_standard("ISO 27001")
     with_checks = {c["control_id"]: [k["id"] for k in c["checks"]] for c in std["controls"] if c.get("checks")}
-    assert with_checks == {
-        "5.2": ["5.2.a", "5.2.b", "5.2.c", "5.2.d"],
-        "6.2": ["6.2.a", "6.2.b", "6.2.c"],
-        "4.3": ["4.3.a", "4.3.b", "4.3.c", "4.3.d"],
-    }
+    assert set(with_checks) == set(STAGE1) | set(STAGE2)
+    for cid, ids in STAGE1.items():
+        assert with_checks[cid] == ids  # stage-1 checks must not change silently
+
+
+@pytest.mark.skipif(not node_available(), reason="node not available")
+def test_checks_are_well_formed():
+    std = load_standard("ISO 27001")
     for c in std["controls"]:
+        stage2 = c["control_id"] in STAGE2  # stage-1 checks are frozen (already reviewed)
+        ids = [k["id"] for k in c.get("checks", [])]
+        assert len(ids) == len(set(ids)), c["control_id"]
         for k in c.get("checks", []):
-            assert k["question"].strip().endswith("?")
-            assert not k["id"].startswith("A.")
+            where = f'{c["control_id"]}/{k["id"]}'
+            assert k["id"].startswith(c["control_id"] + "."), where
+            assert k["question"].strip().endswith("?"), where
+            assert k.get("hint", "").startswith("Count:"), where          # positive hint
+            assert k.get("recommendation", "").strip(), where              # fixed text, human-reviewed
+            if stage2:
+                assert not re.search(r"\b(and|or)\b.*\b(and|or)\b", k["question"]), f"{where}: looks like >1 condition"
+            for a in k.get("anchors") or []:
+                assert a.strip() and a == a.lower(), where
+
+
+@pytest.mark.skipif(not (node_available() and PDF.exists()), reason="node or PDF fixture missing")
+def test_checks_do_not_copy_phrases_from_the_datagraphic_pdf():
+    """Hints/questions must be written from the standard, not from the test document."""
+    import fitz
+
+    def words(t):
+        return re.findall(r"[a-z0-9]+", t.lower())
+
+    with fitz.open(PDF) as doc:
+        pdf_words = words(" ".join(p.get_text() for p in doc))
+    shingles = {tuple(pdf_words[i:i + 6]) for i in range(len(pdf_words) - 5)}
+    std = load_standard("ISO 27001")
+    for c in std["controls"]:
+        if c["control_id"] not in STAGE2:  # stage 1 legitimately shares ISO wording with the PDF
+            continue
+        for k in c.get("checks", []):
+            for field in ("question", "hint", "recommendation"):
+                w = words(k.get(field, ""))
+                hits = [tuple(w[i:i + 6]) for i in range(len(w) - 5) if tuple(w[i:i + 6]) in shingles]
+                assert not hits, f'{c["control_id"]}/{k["id"]}.{field} copies the PDF: {hits[:1]}'
+
+
+# ---------------------------------------------------------------------------
+# Second-pass judge (TRUSTNODE_VERIFY=judge)
+# ---------------------------------------------------------------------------
+
+def test_judge_confirms_keeps_the_check(monkeypatch):
+    monkeypatch.setattr(evaluator, "VERIFY_MODE", "judge")
+    calls = _script(monkeypatch, {
+        "X.1.a": [found("E1", "We commit to continual improvement of the ISMS."), {"verdict": "yes"}],
+        "X.1.b": [found("E2", "The Safety Manager signs off the policy every January."), {"verdict": "YES"}],
+    })
+    out = evaluator.evaluate_checked_control("S", CONTROL)
+    assert out["status"] == "Compliant"
+    judge_prompts = [p for _, p in calls if p.startswith(evaluator.JUDGE_SYSTEM_PROMPT)]
+    assert len(judge_prompts) == 2
+    # the judge sees only the quote and the condition, never the fragments
+    assert all("FRAGMENTOS" not in p and "PASSAGE:" in p for p in judge_prompts)
+
+
+def test_judge_rejection_turns_found_into_missing(monkeypatch):
+    monkeypatch.setattr(evaluator, "VERIFY_MODE", "judge")
+    _script(monkeypatch, {
+        "X.1.a": [found("E1", "We commit to continual improvement of the ISMS."), {"verdict": "yes"}],
+        "X.1.b": [found("E2", "The Safety Manager signs off the policy every January."), {"verdict": "no"}],
+    })
+    out = evaluator.evaluate_checked_control("S", CONTROL)
+    assert out["status"] == "Partial"
+    b = next(c for c in out["checks"] if c["check_id"] == "X.1.b")
+    assert b["found"] is False and b["judge_rejected"] is True and b["citations"] == []
+    assert "verificador rechazó" in out["note"]
+    assert out["recommendation"] == "Name the signatory."
+
+
+def test_judge_failure_counts_as_rejection(monkeypatch):
+    monkeypatch.setattr(evaluator, "VERIFY_MODE", "judge")
+    _script(monkeypatch, {
+        "X.1.a": [found("E1", "We commit to continual improvement of the ISMS."), "not json", "still not json"],
+        "X.1.b": [NOT_FOUND],
+    })
+    # _script json.dumps answers; raw strings become JSON strings -> validation fails twice
+    out = evaluator.evaluate_checked_control("S", CONTROL)
+    assert out["status"] == "Non-Compliant"
+
+
+def test_judge_not_called_for_not_found_or_when_disabled(monkeypatch):
+    monkeypatch.setattr(evaluator, "VERIFY_MODE", "judge")
+    calls = _script(monkeypatch, {"X.1.a": [NOT_FOUND], "X.1.b": [NOT_FOUND]})
+    evaluator.evaluate_checked_control("S", CONTROL)
+    assert len(calls) == 2
+
+    monkeypatch.setattr(evaluator, "VERIFY_MODE", "none")
+    calls = _script(monkeypatch, {
+        "X.1.a": [found("E1", "We commit to continual improvement of the ISMS.")],
+        "X.1.b": [found("E2", "The Safety Manager signs off the policy every January.")],
+    })
+    assert evaluator.evaluate_checked_control("S", CONTROL)["status"] == "Compliant"
+    assert len(calls) == 2
+
+
+def test_judge_prompt_is_the_probe_variant_a_text():
+    """The judge must stay the pre-registered probe prompt (no tuning against results)."""
+    src = (Path(__file__).parent / "tools" / "judge_probe.py").read_text(encoding="utf-8")
+    assert evaluator.JUDGE_SYSTEM_PROMPT in src

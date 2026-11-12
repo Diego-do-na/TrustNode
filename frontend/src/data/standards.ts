@@ -127,6 +127,27 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["approved by", "signed", "published", "communicated", "annual review", "version history"],
         applies_to: ["isms_policy", "topic_policy"],
         legacy_id: "A.5.1.1",
+        checks: [
+          {
+            id: "A.5.1.a",
+            question: "Does the document show that it was approved by management?",
+            hint: "Count: a named approver or approving role (e.g. executive, board, senior management), an approval statement, or a signature/approval block.",
+            recommendation: "Record the approval of the policy by management (approver, role and date).",
+          },
+          {
+            id: "A.5.1.b",
+            question: "Does the document state that it is published or communicated to personnel?",
+            hint: "Count: a statement that the policy is made available, distributed or communicated to staff or other relevant parties.",
+            recommendation: "State how the policy is published and communicated to personnel and relevant interested parties.",
+          },
+          {
+            id: "A.5.1.c",
+            question: "Does the document state that it is reviewed at planned intervals or when significant changes occur?",
+            hint: "Count: a review frequency (e.g. yearly), a review schedule, or review triggered by significant changes.",
+            anchors: ["review", "revis"],
+            recommendation: "Define a review at planned intervals (and on significant changes) and keep a record of the reviews.",
+          },
+        ],
       },
       {
         control_id: "A.5.2",
@@ -136,6 +157,20 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["responsible", "CISO", "managers", "staff", "owner", "steering committee"],
         applies_to: ["isms_policy", "topic_policy"],
         legacy_id: "A.6.1.1",
+        checks: [
+          {
+            id: "A.5.2.a",
+            question: "Does the document assign information security responsibilities to at least one specific role or function?",
+            hint: "Count: a named role, function or committee together with a duty it has regarding information security.",
+            recommendation: "Define and allocate information security responsibilities to specific roles or functions.",
+          },
+          {
+            id: "A.5.2.b",
+            question: "Does the document state information security responsibilities that apply to all personnel?",
+            hint: "Count: duties or obligations that every employee or member of staff must follow regarding information security.",
+            recommendation: "State the information security responsibilities that apply to all personnel.",
+          },
+        ],
       },
       {
         control_id: "A.5.15",
@@ -145,6 +180,26 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["access control", "least privilege", "need to know", "authorization", "user access"],
         applies_to: ["topic_policy"],
         legacy_id: "A.9.1.1",
+        checks: [
+          {
+            id: "A.5.15.a",
+            question: "Does the document state that access is granted on a need-to-know basis or following the least-privilege principle?",
+            hint: "Count: need-to-know, need-to-use or least privilege, in those or equivalent words.",
+            recommendation: "State that access is limited to what each person needs (need-to-know / least privilege).",
+          },
+          {
+            id: "A.5.15.b",
+            question: "Does the document require access to be formally authorized before it is granted?",
+            hint: "Count: a requirement for approval of access requests by an owner, manager or other authority.",
+            recommendation: "Require formal authorization before access to information or systems is granted.",
+          },
+          {
+            id: "A.5.15.c",
+            question: "Does the document base its access rules on business and security requirements?",
+            hint: "Count: a statement that access rules follow business needs, risk or security requirements.",
+            recommendation: "Base the access control rules on documented business and security requirements.",
+          },
+        ],
       },
       {
         control_id: "A.5.24",
@@ -154,6 +209,32 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["incident response", "classification", "escalation", "roles", "incident procedure"],
         applies_to: ["procedure", "topic_policy"],
         legacy_id: "A.16.1.1",
+        checks: [
+          {
+            id: "A.5.24.a",
+            question: "Does the document assign roles or responsibilities for managing information security incidents?",
+            hint: "Count: a named role, team or function that handles, coordinates or decides on security incidents.",
+            recommendation: "Assign roles and responsibilities for information security incident management.",
+          },
+          {
+            id: "A.5.24.b",
+            question: "Does the document define how information security incidents are reported?",
+            hint: "Count: a reporting step, channel or contact point described as part of the incident process.",
+            recommendation: "Define the steps and channels by which incidents are reported within the incident process.",
+          },
+          {
+            id: "A.5.24.c",
+            question: "Does the document define how incidents are assessed or classified?",
+            hint: "Count: assessment of impact or a classification of incidents by severity or type.",
+            recommendation: "Define how incidents are assessed and classified (for example by severity).",
+          },
+          {
+            id: "A.5.24.d",
+            question: "Does the document define how the organization responds to incidents?",
+            hint: "Count: described response actions such as containment, investigation, recovery or escalation.",
+            recommendation: "Describe the incident response actions (containment, investigation, recovery, escalation).",
+          },
+        ],
       },
       {
         control_id: "A.5.29",
@@ -163,6 +244,27 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["business continuity", "disruption", "recovery", "tested", "continuity plan"],
         applies_to: ["isms_policy", "procedure"],
         legacy_id: "A.17.1.1",
+        checks: [
+          {
+            id: "A.5.29.a",
+            question: "Does the document require continuity plans (to keep information security in place during a disruption) to be established?",
+            hint: "Count: a requirement or commitment to have business continuity, disaster recovery or similar plans that keep information security in place during a disruption.",
+            recommendation: "Require business continuity and disruption plans that maintain information security during a disruption.",
+          },
+          {
+            id: "A.5.29.b",
+            question: "Does the document require the continuity plans to be kept up to date?",
+            hint: "Count: a requirement to maintain, update or review the plans.",
+            recommendation: "Require the continuity plans to be maintained and kept up to date.",
+          },
+          {
+            id: "A.5.29.c",
+            question: "Does the document require the continuity plans to be tested?",
+            hint: "Count: testing, exercises, simulations or drills of the plans.",
+            anchors: ["test", "exercis", "drill", "simulat"],
+            recommendation: "Require the continuity plans to be tested periodically (exercises, simulations or drills).",
+          },
+        ],
       },
       {
         control_id: "A.5.31",
@@ -172,6 +274,26 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["legal", "regulatory", "legislation", "GDPR", "data protection", "contractual"],
         applies_to: ["isms_policy"],
         legacy_id: "A.18.1.1",
+        checks: [
+          {
+            id: "A.5.31.a",
+            question: "Does the document commit to meeting applicable legal, statutory or regulatory requirements?",
+            hint: "Count: an explicit commitment to comply with laws, statutes or regulations that apply to the organization.",
+            recommendation: "Add an explicit commitment to comply with applicable legal, statutory and regulatory requirements.",
+          },
+          {
+            id: "A.5.31.b",
+            question: "Does the document commit to meeting applicable contractual requirements?",
+            hint: "Count: an explicit commitment to comply with contractual obligations related to information security.",
+            recommendation: "Add an explicit commitment to meet applicable contractual requirements.",
+          },
+          {
+            id: "A.5.31.c",
+            question: "Does the document say who is responsible for tracking the legal and regulatory requirements that apply?",
+            hint: "Count: a named role or function responsible for identifying the applicable requirements and tracking changes to them.",
+            recommendation: "Assign a role responsible for identifying the applicable requirements and keeping them up to date.",
+          },
+        ],
       },
 
       // ---------- Anexo A: personas ----------
@@ -183,6 +305,26 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["awareness", "training", "induction", "regularly", "education"],
         applies_to: ["isms_policy", "procedure"],
         legacy_id: "A.7.2.2",
+        checks: [
+          {
+            id: "A.6.3.a",
+            question: "Does the document require personnel to receive information security awareness, education or training?",
+            hint: "Count: a requirement or statement that staff are trained or made aware of information security.",
+            recommendation: "Require information security awareness, education and training for all personnel.",
+          },
+          {
+            id: "A.6.3.b",
+            question: "Does the document state that new personnel receive this awareness or training when they join?",
+            hint: "Count: induction, onboarding or training on joining or within a stated period after starting.",
+            recommendation: "Provide information security awareness training to new personnel when they join.",
+          },
+          {
+            id: "A.6.3.c",
+            question: "Does the document state that awareness training is repeated at regular intervals?",
+            hint: "Count: a stated frequency (e.g. annual), periodic refresher training, or regular updates.",
+            recommendation: "Repeat or refresh awareness training at regular intervals.",
+          },
+        ],
       },
       {
         control_id: "A.6.8",
@@ -192,6 +334,26 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["report", "breach", "suspected", "line manager", "security event", "notify"],
         applies_to: ["isms_policy", "procedure"],
         legacy_id: "A.16.1.2",
+        checks: [
+          {
+            id: "A.6.8.a",
+            question: "Does the document require personnel to report observed or suspected information security events?",
+            hint: "Count: an obligation on staff to report events, incidents, breaches or suspected weaknesses.",
+            recommendation: "Require all personnel to report observed or suspected information security events.",
+          },
+          {
+            id: "A.6.8.b",
+            question: "Does the document say to whom, or through which channel, security events are reported?",
+            hint: "Count: a named role, function, contact point, mailbox, phone line or reporting tool.",
+            recommendation: "Identify the contact point or channel through which events must be reported.",
+          },
+          {
+            id: "A.6.8.c",
+            question: "Does the document require security events to be reported promptly?",
+            hint: "Count: words such as immediately, promptly or as soon as possible, or a stated deadline.",
+            recommendation: "Require events to be reported in a timely manner and state the expected timeframe.",
+          },
+        ],
       },
 
       // ---------- Anexo A: tecnológicos ----------
@@ -203,6 +365,20 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["authentication", "log-on", "login", "password", "MFA", "multi-factor"],
         applies_to: ["topic_policy", "procedure"],
         legacy_id: "A.9.4.2",
+        checks: [
+          {
+            id: "A.8.5.a",
+            question: "Does the document set at least one requirement on the strength or handling of authentication credentials?",
+            hint: "Count: password or passphrase rules (length, complexity, reuse, change) or rules for protecting authentication secrets.",
+            recommendation: "Define requirements for the strength and protection of authentication credentials.",
+          },
+          {
+            id: "A.8.5.b",
+            question: "Does the document require stronger authentication for higher-risk access?",
+            hint: "Count: an additional authentication factor required in some cases, or authentication strength tied to risk or sensitivity.",
+            recommendation: "Require stronger authentication where the risk or sensitivity of the access calls for it.",
+          },
+        ],
       },
       {
         control_id: "A.8.8",
@@ -212,6 +388,32 @@ export const STANDARD_DEFINITIONS: Record<string, AuditRequest> = {
         search_keywords: ["vulnerability", "patch", "remediation", "scan", "CVE", "timeframe"],
         applies_to: ["topic_policy", "procedure"],
         legacy_id: "A.12.6.1",
+        checks: [
+          {
+            id: "A.8.8.a",
+            question: "Does the document state how technical vulnerabilities are identified?",
+            hint: "Count: scanning, testing, monitoring of advisories or other named sources used to discover vulnerabilities.",
+            recommendation: "Define how technical vulnerabilities are identified (scanning, advisories, monitoring).",
+          },
+          {
+            id: "A.8.8.b",
+            question: "Does the document require identified vulnerabilities to be assessed or prioritized?",
+            hint: "Count: evaluation of risk, severity or priority of vulnerabilities.",
+            recommendation: "Require vulnerabilities to be assessed and prioritized by risk or severity.",
+          },
+          {
+            id: "A.8.8.c",
+            question: "Does the document require identified vulnerabilities to be remediated or mitigated?",
+            hint: "Count: patching, fixing or applying a compensating measure to vulnerabilities.",
+            recommendation: "Require vulnerabilities to be remediated or mitigated.",
+          },
+          {
+            id: "A.8.8.d",
+            question: "Does the document define timeframes for remediating vulnerabilities?",
+            hint: "Count: a stated deadline or timeframe, possibly depending on severity.",
+            recommendation: "Define remediation timeframes (for example by severity).",
+          },
+        ],
       },
     ],
   },

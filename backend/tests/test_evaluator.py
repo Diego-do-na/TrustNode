@@ -306,3 +306,26 @@ def test_summary_prompt_omits_not_evaluable_and_adds_count():
 def test_summary_prompt_no_count_line_when_all_evaluable_and_null_score():
     p = evaluator.build_summary_prompt("S", None, [{"control_id": "1", "status": "Compliant"}], "English")
     assert "no evaluables" not in p and "GLOBAL SCORE: N/A" in p
+
+
+def test_quote_is_reassigned_to_the_chunk_where_it_is_exact():
+    """Same sentence on two pages, slightly different wording: the page must follow the exact text."""
+    from evaluator import LLMCitation, verify_citations
+
+    chunks = [
+        {"id": "a", "source": "d.pdf", "page": 6, "text": "Staff will receive Information Security training upon inception and regularly after that."},
+        {"id": "b", "source": "d.pdf", "page": 5, "text": "6. Staff will receive Information Security Awareness training upon inception and regularly after that."},
+    ]
+    quote = "Staff will receive Information Security Awareness training upon inception and regularly after that."
+    out = verify_citations([LLMCitation(chunk_id="E1", quote=quote)], chunks, "t")
+    assert [(c.chunk_id, c.page) for c in out] == [("E2", 5)]
+
+
+def test_fuzzy_match_is_still_accepted_when_no_chunk_has_the_exact_quote():
+    from evaluator import LLMCitation, verify_citations
+
+    chunks = [{"id": "a", "source": "d.pdf", "page": 6,
+               "text": "Staff will receive Information Security training upon inception and regularly after that."}]
+    quote = "Staff will receive Information Security Awareness training upon inception and regularly after that."
+    out = verify_citations([LLMCitation(chunk_id="E1", quote=quote)], chunks, "t")
+    assert [(c.chunk_id, c.page) for c in out] == [("E1", 6)]

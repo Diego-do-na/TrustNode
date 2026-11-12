@@ -55,6 +55,8 @@ export interface CheckResult {
   found: boolean;
   citations?: Citation[];
   evidence_unverified?: boolean;
+  /** Quotes were verified but the second-pass judge confirmed none of them. */
+  judge_rejected?: boolean;
 }
 
 export interface AuditResult {

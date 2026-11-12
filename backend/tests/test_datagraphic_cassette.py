@@ -41,7 +41,9 @@ ACCEPTABLE = {
 # delete the marker.
 KNOWN_MODEL_FAILURES = {
     "6.2": "llama3.1 8B answers 'found' for the measurability and ownership checks "
-           "with quotes that do not satisfy the condition",
+           "with quotes that do not satisfy the condition. The judge pass (TRUSTNODE_VERIFY=judge) "
+           "fixes 6.2 but rejects valid evidence on 5.2/A.5.2/A.5.31, so it is off by default "
+           "(see bench/README.md)",
 }
 
 
@@ -78,6 +80,7 @@ def replayed(cassette):
         mp.setattr(evaluator, "_call_ollama", call)
         mp.setattr(evaluator, "get_collection_stats", lambda: {"documents": 6})
         mp.setattr(evaluator, "CHECK_RETRIEVAL", cassette["meta"]["retrieval_mode"])
+        mp.setattr(evaluator, "VERIFY_MODE", cassette["meta"].get("verify", "none"))
         req = AuditRequest(**load_standard(cassette["meta"]["standard"]), doc_type=cassette["meta"]["doc_type"])
         resp = evaluator.run_audit(req)
         leftovers = {k: len(v) for k, v in queues.items() if v}
@@ -136,3 +139,29 @@ def test_every_citation_is_on_the_page_it_claims(replayed):
             assert c.page in pages, (r.control_id, c)
             assert evaluator.verify_quote(c.quote, pages[c.page]), (r.control_id, c.page, c.quote)
     assert seen > 0
+
+
+def test_an_always_not_found_model_cannot_satisfy_the_acceptable_sets(cassette):
+    """Sanity check of the expectations themselves: a degenerate model that answers
+    not_found / Non-Compliant to everything must be CAUGHT by ACCEPTABLE (offline)."""
+    mp = pytest.MonkeyPatch()
+    try:
+        retrieval = {json.dumps([r["keywords"], r["n_results"]]): r["chunks"] for r in cassette["retrieval"]}
+        mp.setattr(evaluator, "query_evidence", lambda kw, n_results=3: retrieval[json.dumps([list(kw), n_results])])
+
+        def call(prompt):
+            if "CHECK ID:" in prompt:
+                return json.dumps({"answer": "not_found", "citations": []})
+            return json.dumps({"status": "Non-Compliant", "citations": [], "gaps": "x", "recommendation": "y"})
+
+        mp.setattr(evaluator, "_call_ollama", call)
+        mp.setattr(evaluator, "get_collection_stats", lambda: {"documents": 6})
+        mp.setattr(evaluator, "CHECK_RETRIEVAL", cassette["meta"]["retrieval_mode"])
+        mp.setattr(evaluator, "VERIFY_MODE", cassette["meta"].get("verify", "none"))
+        resp = evaluator.run_audit(AuditRequest(**load_standard(cassette["meta"]["standard"]),
+                                                doc_type=cassette["meta"]["doc_type"]))
+    finally:
+        mp.undo()
+    violations = [r.control_id for r in resp.results if r.status not in ACCEPTABLE[r.control_id]]
+    assert {"5.2", "A.5.2", "A.5.29", "A.5.31", "A.6.3", "6.2", "4.3"} <= set(violations)
+    assert resp.global_score_percentage == 0.0
