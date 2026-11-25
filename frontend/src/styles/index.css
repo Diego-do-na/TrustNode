@@ -1385,6 +1385,10 @@ button {
   background: rgba(76, 175, 125, 0.85);
 }
 
+.heatmap-swatch.not-evaluable {
+  background: rgba(140, 146, 158, 0.5);
+}
+
 .heatmap-swatch.partial {
   background: rgba(212, 160, 23, 0.85);
 }
@@ -1474,6 +1478,12 @@ button {
   background: rgba(76, 175, 125, 0.22);
   color: #4caf7d;
   border-color: rgba(76, 175, 125, 0.32);
+}
+
+.heatmap-cell.not-evaluable {
+  background: rgba(140, 146, 158, 0.14);
+  color: #8c929e;
+  border-color: rgba(140, 146, 158, 0.28);
 }
 
 .heatmap-cell.partial {
@@ -1603,6 +1613,43 @@ button {
   font-size: 12.5px;
   line-height: 1.55;
   color: var(--text-2);
+}
+
+.check-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.check-item {
+  display: flex;
+  gap: 8px;
+  font-size: 12.5px;
+  line-height: 1.45;
+}
+
+.check-item .check-mark {
+  font-weight: 700;
+}
+
+.check-item.found .check-mark {
+  color: #4caf7d;
+}
+
+.check-item.missing .check-mark {
+  color: #d94f4f;
+}
+
+.check-id {
+  opacity: 0.6;
+  font-variant-numeric: tabular-nums;
+}
+
+.check-unverified {
+  color: #d94f4f;
 }
 
 .evidence-snippet {
@@ -1759,6 +1806,11 @@ button {
 .tag.non-compliant {
   background: rgba(217, 79, 79, 0.12);
   color: #d94f4f;
+}
+
+.tag.not-evaluable {
+  background: rgba(140, 146, 158, 0.14);
+  color: #8c929e;
 }
 
 .f-time {

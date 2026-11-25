@@ -1,11 +1,13 @@
 import { formatRelativeTime, useAppState } from "../context/AppStateContext";
 import type { AuditResponse } from "../api/client";
+import { docTypeLabel } from "../utils/auditMetrics";
 
 interface ReportsPageProps {
   onShowReport: (results: AuditResponse[], language?: string) => void;
 }
 
-function scoreClass(score: number): "high" | "mid" | "low" {
+function scoreClass(score: number | null): "high" | "mid" | "low" {
+  if (score === null) return "low";
   if (score >= 80) return "high";
   if (score >= 60) return "mid";
   return "low";
@@ -23,7 +25,7 @@ export function ReportsPage({ onShowReport }: ReportsPageProps) {
         </article>
         <article className="stat-pill">
           <span className="stat-pill-value">
-            {reports.filter((r) => r.score >= 80).length}
+            {reports.filter((r) => r.score !== null && r.score >= 80).length}
           </span>
           <span className="stat-pill-label">High compliance</span>
         </article>
@@ -57,10 +59,13 @@ export function ReportsPage({ onShowReport }: ReportsPageProps) {
                             {std}
                           </span>
                         ))}
+                        {docTypeLabel(report.docType) && (
+                          <span className="f-std">{docTypeLabel(report.docType)}</span>
+                        )}
                         <span className="f-time">{formatRelativeTime(report.createdAt)}</span>
                       </span>
                     </button>
-                    <span className={`list-row-score ${level}`}>{report.score}%</span>
+                    <span className={`list-row-score ${level}`}>{report.score === null ? "N/A" : `${report.score}%`}</span>
                     <button
                       type="button"
                       className="btn-ghost btn-sm"

@@ -22,9 +22,23 @@ from chromadb.config import Settings
 # ──────────────────────────────────────────────
 # Global configuration
 # ──────────────────────────────────────────────
-OLLAMA_URL   = "http://localhost:11434/api/embeddings"
-OLLAMA_MODEL = "nomic-embed-text"
+OLLAMA_URL   = "http://localhost:11434/api/embeddings"   # legacy, single text
+OLLAMA_EMBED_URL = "http://localhost:11434/api/embed"     # batch
+OLLAMA_MODEL = os.environ.get("TRUSTNODE_EMBED_MODEL", "nomic-embed-text")
 CHROMA_PATH  = "./chroma_db"
+
+# Tunables (defaults = historical behaviour). Read at call time so the benchmark can
+# change them in-process.
+CHUNK_WORDS   = int(os.environ.get("TRUSTNODE_CHUNK_WORDS", "500"))
+CHUNK_OVERLAP = int(os.environ.get("TRUSTNODE_CHUNK_OVERLAP", "50"))
+# Some embedding models are trained with task prefixes (nomic: "search_document: " /
+# "search_query: "). Empty = no prefix (historical behaviour).
+EMBED_DOC_PREFIX   = os.environ.get("TRUSTNODE_EMBED_DOC_PREFIX", "")
+EMBED_QUERY_PREFIX = os.environ.get("TRUSTNODE_EMBED_QUERY_PREFIX", "")
+# Context window of the embedding model. Ollama silently truncates longer inputs, so big
+# chunks need this raised (nomic-embed-text supports 8192). Unset = Ollama default.
+EMBED_NUM_CTX = int(os.environ["TRUSTNODE_EMBED_NUM_CTX"]) if os.environ.get("TRUSTNODE_EMBED_NUM_CTX") else None
+EMBED_BATCH = int(os.environ.get("TRUSTNODE_EMBED_BATCH", "32"))
 
 
 # ──────────────────────────────────────────────
@@ -123,7 +137,7 @@ def extract_text_chunks_with_metadata(
             # step = chunk_size - overlap ensures each chunk
             # shares `overlap` words with the next one.
             words = cleaned.split()
-            step  = chunk_size - overlap
+            step  = max(1, chunk_size - overlap)
 
             for start in range(0, len(words), step):
                 chunk_words = words[start : start + chunk_size]
@@ -168,6 +182,8 @@ def get_ollama_embedding(text: str) -> list[float]:
         "model":  OLLAMA_MODEL,
         "prompt": text,
     }
+    if EMBED_NUM_CTX:
+        payload["options"] = {"num_ctx": EMBED_NUM_CTX}
 
     try:
         response = requests.post(OLLAMA_URL, json=payload, timeout=30)
@@ -195,6 +211,38 @@ def get_ollama_embedding(text: str) -> list[float]:
         )
 
     return data["embedding"]
+
+
+def get_ollama_embeddings(texts: list[str]) -> list[list[float] | None]:
+    """Embed many texts with /api/embed in batches of EMBED_BATCH.
+
+    Returns one vector per text (None where it failed). A failed batch falls back to the
+    single-text endpoint, text by text, so one bad chunk does not drop its neighbours.
+    Vectors from /api/embed are L2-normalised; with cosine distance the ranking is the
+    same as with the legacy endpoint.
+    """
+    out: list[list[float] | None] = []
+    for i in range(0, len(texts), EMBED_BATCH):
+        batch = texts[i:i + EMBED_BATCH]
+        payload: dict = {"model": OLLAMA_MODEL, "input": batch}
+        if EMBED_NUM_CTX:
+            payload["options"] = {"num_ctx": EMBED_NUM_CTX}
+        try:
+            r = requests.post(OLLAMA_EMBED_URL, json=payload, timeout=120)
+            r.raise_for_status()
+            vecs = r.json()["embeddings"]
+            if len(vecs) != len(batch):
+                raise ValueError("embedding count mismatch")
+            out.extend(vecs)
+            continue
+        except (requests.exceptions.RequestException, KeyError, ValueError):
+            pass
+        for t in batch:
+            try:
+                out.append(get_ollama_embedding(t))
+            except (ConnectionError, ValueError):
+                out.append(None)
+    return out
 
 
 # ══════════════════════════════════════════════
@@ -303,21 +351,16 @@ def query_evidence(
     keywords: list[str],
     n_results: int = 3,
     collection_name: str = "trustnode_evidence",
-) -> str:
+) -> list[dict]:
     """
-    Converts a list of keywords into an embedding, searches ChromaDB for
-    the most relevant fragments, and returns a consolidated text block
-    ready to be consumed by the audit pipeline.
-
-    Args:
-        keywords:        List of search terms (e.g. ["GDPR", "personal data"]).
-        n_results:       Number of fragments to retrieve (default 3).
-        collection_name: Name of the collection to query.
+    Converts a list of keywords into an embedding and searches ChromaDB for
+    the most relevant fragments.
 
     Returns:
-        String with the most relevant fragments concatenated, each headed
-        by its metadata (source, page, relevance score). Returns a warning
-        message if the collection is empty or no results are found.
+        Structured list of chunks, most relevant first. Each item is a dict
+        with keys ``id`` (ChromaDB id), ``text``, ``page`` (int | None),
+        ``source`` and ``relevance`` (cosine similarity as a percentage).
+        The list is empty if the collection is missing/empty or nothing matched.
 
     Raises:
         ConnectionError: If Ollama is unavailable when generating the query embedding.
@@ -329,22 +372,21 @@ def query_evidence(
 
     existing = [c.name for c in client.list_collections()]
     if collection_name not in existing:
-        return (
-            f"[query_evidence] Collection '{collection_name}' does not exist. "
-            "Run `process_and_store_document()` first."
-        )
+        print(f"[query_evidence] Collection '{collection_name}' does not exist.")
+        return []
 
     collection = client.get_collection(collection_name)
 
     if collection.count() == 0:
-        return "[query_evidence] Collection is empty. No evidence has been indexed."
+        print("[query_evidence] Collection is empty. No evidence has been indexed.")
+        return []
 
     # ── Build query embedding ───────────────────────────────
     query_text = " ".join(keywords)
     print(f"[query] Searching: '{query_text}'")
 
     try:
-        query_vector = get_ollama_embedding(query_text)
+        query_vector = get_ollama_embedding(EMBED_QUERY_PREFIX + query_text)
     except (ConnectionError, ValueError) as exc:
         raise ConnectionError(
             f"Could not generate query embedding: {exc}"
@@ -357,26 +399,22 @@ def query_evidence(
         include=["documents", "metadatas", "distances"],
     )
 
-    # ── Consolidate results into a single text block ────────
-    fragments: list[str] = []
-
+    ids       = results.get("ids", [[]])[0]
     docs      = results.get("documents", [[]])[0]
     metas     = results.get("metadatas", [[]])[0]
     distances = results.get("distances", [[]])[0]
 
-    for doc, meta, dist in zip(docs, metas, distances):
-        relevance = round((1 - dist) * 100, 2)  # cosine distance → % similarity
-        header = (
-            f"[Source: {meta.get('source', 'unknown')} | "
-            f"Page: {meta.get('page', '?')} | "
-            f"Relevance: {relevance}%]"
-        )
-        fragments.append(f"{header}\n{doc}")
-
-    if not fragments:
-        return "[query_evidence] No relevant fragments found for the given keywords."
-
-    return "\n\n---\n\n".join(fragments)
+    chunks: list[dict] = []
+    for cid, doc, meta, dist in zip(ids, docs, metas, distances):
+        meta = meta or {}
+        chunks.append({
+            "id": cid,
+            "text": doc,
+            "page": meta.get("page"),
+            "source": meta.get("source", "unknown"),
+            "relevance": round((1 - dist) * 100, 2),  # cosine distance → % similarity
+        })
+    return chunks
 
 
 # ══════════════════════════════════════════════
@@ -440,7 +478,7 @@ def ingest_pdf(file_bytes: bytes, filename: str, collection_name: str = "trustno
         tmp_path = tmp.name
 
     try:
-        records = extract_text_chunks_with_metadata(tmp_path)
+        records = extract_text_chunks_with_metadata(tmp_path, CHUNK_WORDS, CHUNK_OVERLAP)
     finally:
         os.unlink(tmp_path)
 
@@ -465,10 +503,11 @@ def ingest_pdf(file_bytes: bytes, filename: str, collection_name: str = "trustno
     documents:  list[str]         = []
     metadatas:  list[dict]        = []
 
-    for record in records:
-        try:
-            vector = get_ollama_embedding(record.text)
-        except (ConnectionError, ValueError):
+    vectors = get_ollama_embeddings([EMBED_DOC_PREFIX + r.text for r in records])
+    failed = 0
+    for record, vector in zip(records, vectors):
+        if vector is None:
+            failed += 1
             continue
 
         ids.append(f"{filename}_chunk{record.chunk_idx}")
@@ -490,8 +529,12 @@ def ingest_pdf(file_bytes: bytes, filename: str, collection_name: str = "trustno
             metadatas=metadatas[b],
         )
 
-    print(f"  [ingest_pdf] '{filename}' → {len(ids)} chunks stored.")
-    return {"filename": filename, "chunks": len(ids)}
+    print(f"  [ingest_pdf] '{filename}' → {len(ids)} chunks stored ({failed} failed embeddings).")
+    result = {"filename": filename, "chunks": len(ids)}
+    if failed:
+        result["failed_embeddings"] = failed
+        result["warning"] = f"{failed} of {len(records)} chunks could not be embedded."
+    return result
 
 
 # ══════════════════════════════════════════════

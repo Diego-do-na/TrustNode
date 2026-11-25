@@ -8,7 +8,8 @@ import {
   useState,
   type ReactNode,
 } from "react";
-import type { AuditRequest, AuditResponse } from "../api/client";
+import type { AuditRequest, AuditResponse, DocType } from "../api/client";
+import { normalizeAuditResponse } from "../utils/scoring";
 
 // ──────────────────────────────────────────────────────────────────────────
 // Types
@@ -26,7 +27,9 @@ export interface StoredReport {
   id: string;
   name: string;
   standards: string[];
-  score: number;
+  score: number | null;
+  /** Absent in reports saved by older versions. */
+  docType?: DocType;
   createdAt: number;     // epoch ms
   results: AuditResponse[];
   documentNames: string[];
@@ -81,7 +84,12 @@ function loadPersisted(): PersistedShape {
     const parsed = JSON.parse(raw) as Partial<PersistedShape>;
     return {
       documents: parsed.documents ?? [],
-      reports: parsed.reports ?? [],
+      // Reports saved by older versions lack evaluated/not_evaluable counts: backfill.
+      reports: (parsed.reports ?? []).map((rep) => ({
+        ...rep,
+        score: typeof rep.score === "number" && Number.isFinite(rep.score) ? rep.score : null,
+        results: (rep.results ?? []).map((r) => normalizeAuditResponse(r)),
+      })),
       customStandards: parsed.customStandards ?? [],
     };
   } catch {

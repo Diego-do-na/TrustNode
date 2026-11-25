@@ -2,7 +2,7 @@ import { useCallback, useEffect, useState } from "react";
 import { createPortal } from "react-dom";
 import { exportReportPdf, type AuditResponse, type ExportFinding } from "../api/client";
 import { LogoMark } from "./Logo";
-import { averageTrustScore, flattenFindings, scoreLevel } from "../utils/auditMetrics";
+import { averageTrustScore, docTypeLabel, flattenFindings, formatScore, scoreLevel } from "../utils/auditMetrics";
 
 interface ReportPreviewModalProps {
   open: boolean;
@@ -42,11 +42,14 @@ export function ReportPreviewModal({ open, auditResults, lastAuditAt, executiveS
 
   if (!open || auditResults.length === 0) return null;
 
-  const score = averageTrustScore(auditResults)!;
-  const level = scoreLevel(score);
+  const score = averageTrustScore(auditResults);
+  const level = score === null ? "mid" : scoreLevel(score);
+  const evaluatedTotal = auditResults.reduce((n, r) => n + r.evaluated_count, 0);
+  const notEvaluableTotal = auditResults.reduce((n, r) => n + r.not_evaluable_count, 0);
   const previewFindings = flattenFindings(auditResults)
     .filter((f) => f.severity !== "pass")
     .slice(0, 6);
+  const docType = auditResults.find((r) => r.doc_type)?.doc_type ?? null;
   const generated = lastAuditAt?.toLocaleString() ?? new Date().toLocaleString();
 
   const handleExport = async () => {
@@ -64,12 +67,16 @@ export function ReportPreviewModal({ open, auditResults, lastAuditAt, executiveS
           gaps: r.gaps ?? "",
           recommendation: r.recommendation ?? "",
           risk_level: r.risk_level ?? "",
+          citations: r.citations ?? [],
+          evidence_unverified: r.evidence_unverified ?? false,
+          checks: r.checks ?? [],
         })),
       );
 
       const blob = await exportReportPdf({
         standard_name: auditResults.map((r) => r.standard_audited).join(" + "),
         compliance_score: score,
+        doc_type: docType,
         findings: allFindings,
         executive_summary: executiveSummary,
         generated_at: generated,
@@ -119,6 +126,7 @@ export function ReportPreviewModal({ open, auditResults, lastAuditAt, executiveS
             </div>
             <div className="report-preview-meta">
               <span>Generated {generated}</span>
+              {docTypeLabel(docType) && <span>Document type: {docTypeLabel(docType)}</span>}
               <span>{auditResults.length} standard{auditResults.length > 1 ? "s" : ""}</span>
             </div>
           </header>
@@ -126,9 +134,12 @@ export function ReportPreviewModal({ open, auditResults, lastAuditAt, executiveS
           <section className="report-preview-score-block">
             <span className="report-preview-label">Trust score</span>
             <div className={`report-preview-score report-preview-score--${level}`}>
-              {score}
-              <span>/100</span>
+              {score === null ? "N/A" : score}
+              {score !== null && <span>/100</span>}
             </div>
+            <span className="report-preview-label">
+              {evaluatedTotal} evaluados, {notEvaluableTotal} no evaluables
+            </span>
           </section>
 
           <section className="report-preview-section">
@@ -137,7 +148,7 @@ export function ReportPreviewModal({ open, auditResults, lastAuditAt, executiveS
               {auditResults.map((r) => (
                 <li key={r.standard_audited}>
                   <span>{r.standard_audited}</span>
-                  <strong>{Math.round(r.global_score_percentage)}%</strong>
+                  <strong>{formatScore(r.global_score_percentage)}</strong>
                 </li>
               ))}
             </ul>

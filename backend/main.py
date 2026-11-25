@@ -29,7 +29,7 @@ from fastapi.responses import JSONResponse, Response
 
 # Team modules. These signatures are the CONTRACT — notify the team if they change.
 from ingestion import ingest_pdf, get_collection_stats, clear_collection
-from evaluator import run_audit, check_llm_alive, generate_executive_summary
+from evaluator import EmptyEvidenceError, run_audit, check_llm_alive, generate_executive_summary
 from latex_report import render_pdf
 from schemas import (
     AuditRequest,
@@ -283,8 +283,9 @@ async def audit_endpoint(payload: AuditRequest) -> AuditResponse:
     TODO(post-hackathon): if runtime exceeds ~30s, move to job-queue pattern (POST returns job_id).
     """
     logger.info(
-        "Audit requested: standard=%r, controls=%d",
+        "Audit requested: standard=%r, doc_type=%s, controls=%d",
         payload.standard_name,
+        payload.doc_type,
         len(payload.controls),
     )
 
@@ -292,11 +293,17 @@ async def audit_endpoint(payload: AuditRequest) -> AuditResponse:
         # The evaluator orchestrates retrieval + prompting + parsing.
         # Blocking (waits on local LLM) → threadpool.
         result = await run_in_threadpool(run_audit, payload)
+    except EmptyEvidenceError as e:
+        logger.error("Audit aborted: %s", e)
+        raise HTTPException(status_code=422, detail=str(e)) from e
     except Exception as e:  # noqa: BLE001
         logger.exception("Audit failed")
         raise HTTPException(status_code=500, detail=f"Audit error: {e}") from e
 
-    logger.info("Audit complete: %d/%d controls evaluated.", len(result.findings), len(payload.controls))
+    logger.info(
+        "Audit complete: %d evaluated, %d not evaluable, score=%s.",
+        result.evaluated_count, result.not_evaluable_count, result.global_score_percentage,
+    )
     return result
 
 
@@ -315,7 +322,7 @@ async def summary_endpoint(payload: SummaryRequest) -> SummaryResponse:
         raise HTTPException(status_code=400, detail="No audit results provided.")
 
     logger.info(
-        "Summary requested: standard=%r, findings=%d, score=%.1f",
+        "Summary requested: standard=%r, findings=%d, score=%s",
         payload.standard_audited,
         len(payload.results),
         payload.global_score_percentage,
@@ -353,7 +360,7 @@ async def export_pdf_endpoint(payload: ExportPdfRequest) -> Response:
     returns the resulting PDF as an attachment.
     """
     logger.info(
-        "Export PDF requested: standard=%r, findings=%d, score=%.1f",
+        "Export PDF requested: standard=%r, findings=%d, score=%s",
         payload.standard_name,
         len(payload.findings),
         payload.compliance_score,

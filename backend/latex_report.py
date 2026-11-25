@@ -61,6 +61,16 @@ _STATUS_STYLE: dict[str, tuple[str, str, str]] = {
     "compliant":      ("tnEmerald", "tnEmerald!8",  "tnEmerald!80!black"),
     "partial":        ("tnAmber",   "tnAmber!10",   "tnAmber!80!black"),
     "non-compliant":  ("tnCrimson", "tnCrimson!8",  "tnCrimson!80!black"),
+    "not_evaluable":  ("tnGray",    "tnGray!8",     "tnGray!80!black"),
+}
+
+_STATUS_LABEL: dict[str, str] = {"not_evaluable": "Not Evaluable"}
+
+_DOC_TYPE_LABEL: dict[str, str] = {
+    "isms_policy": "ISMS policy",
+    "topic_policy": "Topic-specific policy",
+    "procedure": "Procedure",
+    "soa": "Statement of Applicability",
 }
 
 _FALLBACK_STYLE = ("tnGray", "tnGray!8", "tnGray!80!black")
@@ -132,12 +142,32 @@ _PREAMBLE = r"""
 # ---------------------------------------------------------------------------
 
 
+def _count_evaluation(findings: list[ExportFinding]) -> tuple[int, int]:
+    """Return (evaluated, not_evaluable) counts."""
+    not_eval = sum(1 for f in findings if (f.status or "").strip().lower() == "not_evaluable")
+    return len(findings) - not_eval, not_eval
+
+
 def _cover_block(req: ExportPdfRequest) -> str:
     generated = tex_escape(req.generated_at or datetime.now().strftime("%Y-%m-%d %H:%M"))
     standard = tex_escape(req.standard_name)
-    score_int = int(round(req.compliance_score))
+    evaluated, not_eval = _count_evaluation(req.findings)
+    counts = tex_escape(f"{evaluated} evaluados, {not_eval} no evaluables")
+    doc_label = _DOC_TYPE_LABEL.get(req.doc_type or "", req.doc_type or "")
+    doc_part = rf" \quad\textbar\quad Document type: \textbf{{{tex_escape(doc_label)}}}" if doc_label else ""
 
-    if score_int >= 80:
+    if req.compliance_score is None:
+        score_int = None
+        score_text = r"N/A"
+        score_color = "tnGray"
+    else:
+        score_int = int(round(req.compliance_score))
+        score_text = rf"{score_int}\,\textnormal{{\Large /100}}"
+        score_color = ""
+
+    if score_color:
+        pass
+    elif score_int >= 80:
         score_color = "tnEmerald"
     elif score_int >= 60:
         score_color = "tnAmber"
@@ -150,7 +180,7 @@ def _cover_block(req: ExportPdfRequest) -> str:
 \vspace{{4pt}}
 {{\LARGE\bfseries\color{{tnDark}} TRUSTNODE AUTOMATED COMPLIANCE REPORT\par}}
 \vspace{{6pt}}
-{{\color{{tnGray}}\small Generated {generated} \quad\textbar\quad Standard: \textbf{{{standard}}}\par}}
+{{\color{{tnGray}}\small Generated {generated} \quad\textbar\quad Standard: \textbf{{{standard}}}{doc_part}\par}}
 \end{{center}}
 
 \vspace{{4pt}}
@@ -168,10 +198,12 @@ def _cover_block(req: ExportPdfRequest) -> str:
 \begin{{minipage}}{{0.55\textwidth}}
   {{\color{{tnGray}}\footnotesize\textsc{{Trust Score}}\par}}
   \vspace{{4pt}}
-  {{\color{{tnGray}}\small Overall compliance posture against the audited standard.}}
+  {{\color{{tnGray}}\small Overall compliance posture against the audited standard.\par}}
+  \vspace{{2pt}}
+  {{\color{{tnGray}}\small {counts}}}
 \end{{minipage}}\hfill
 \begin{{minipage}}{{0.4\textwidth}}\raggedleft
-  {{\fontsize{{48}}{{52}}\selectfont\bfseries\color{{{score_color}}}{score_int}\,\textnormal{{\Large /100}}\par}}
+  {{\fontsize{{48}}{{52}}\selectfont\bfseries\color{{{score_color}}}{score_text}\par}}
 \end{{minipage}}
 \end{{tcolorbox}}
 """
@@ -211,21 +243,38 @@ def _finding_block(finding: ExportFinding) -> str:
     frame, back, label = _style_for(finding.status)
     standard = tex_escape(finding.standard) or tex_escape("")
     control_id = tex_escape(finding.control_id or "")
-    status = tex_escape(finding.status or "")
+    status = tex_escape(_STATUS_LABEL.get((finding.status or "").strip().lower(), finding.status or ""))
     risk = tex_escape(finding.risk_level or "")
 
     rows: list[str] = []
-    if _is_meaningful(finding.evidence_found):
+    is_ne = (finding.status or "").strip().lower() == "not_evaluable"
+    if is_ne and _is_meaningful(finding.gaps):
+        rows.append(rf"\textbf{{\color{{tnDark}}Reason:}} {tex_escape(finding.gaps)}")
+    elif _is_meaningful(finding.evidence_found):
         rows.append(
             rf"\textbf{{\color{{tnDark}}Evidence:}} {tex_escape(finding.evidence_found)} \\[2pt]"
         )
-    if _is_meaningful(finding.gaps):
+    if not is_ne and _is_meaningful(finding.gaps):
         rows.append(
             rf"\textbf{{\color{{tnDark}}Gap:}} {tex_escape(finding.gaps)} \\[2pt]"
         )
-    if _is_meaningful(finding.recommendation):
+    if not is_ne and _is_meaningful(finding.recommendation):
         rows.append(
             rf"\textbf{{\color{{tnDark}}Recommendation:}} {tex_escape(finding.recommendation)}"
+        )
+    if finding.checks:
+        items = []
+        for ck in finding.checks:
+            mark = r"{\color{tnEmerald}\bfseries[found]}" if ck.found else r"{\color{tnCrimson}\bfseries[missing]}"
+            items.append(rf"\item {mark} \textbf{{{tex_escape(ck.check_id)}}} {tex_escape(ck.question)}")
+        rows.append(
+            r"\par\vspace{4pt}\textbf{\color{tnDark}Checks:}"
+            "\n\\begin{itemize}\n" + "\n".join(items) + "\n\\end{itemize}"
+        )
+    if finding.evidence_unverified:
+        rows.append(
+            r"\par\vspace{4pt}{\color{tnCrimson}\bfseries\itshape [!] Evidence unverified: "
+            r"the model's verdict could not be backed by verifiable quotes (sin evidencia verificable).}"
         )
     body = "\n".join(rows) if rows else r"{\color{tnGray}\itshape No further details provided.}"
 
@@ -235,13 +284,14 @@ def _finding_block(finding: ExportFinding) -> str:
     )
 
     risk_suffix = rf" \quad\textbar\quad Risk: {risk}" if risk else ""
+    box_style = "boxrule=1.8pt, colframe=tnCrimson" if finding.evidence_unverified else "boxrule=0.5pt"
 
     return rf"""
 \begin{{tcolorbox}}[
   enhanced, breakable,
   colback={back},
   colframe={frame},
-  boxrule=0.5pt,
+  {box_style},
   arc=3pt,
   left=14pt, right=14pt, top=10pt, bottom=10pt,
   before skip=8pt, after skip=8pt,
@@ -262,7 +312,7 @@ def _findings_section(findings: list[ExportFinding]) -> str:
         )
 
     # Order: Non-Compliant first, then Partial, then Compliant.
-    order = {"non-compliant": 0, "partial": 1, "compliant": 2}
+    order = {"non-compliant": 0, "partial": 1, "compliant": 2, "not_evaluable": 3}
     sorted_findings = sorted(
         findings,
         key=lambda f: order.get((f.status or "").strip().lower(), 99),

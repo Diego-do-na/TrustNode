@@ -1,15 +1,17 @@
 import type { AuditResponse, AuditResult } from "../api/client";
 import { STANDARD_DEFINITIONS } from "../data/standards";
+import { formatScore } from "../utils/auditMetrics";
 
 interface ComplianceHeatmapProps {
   auditResults: AuditResponse[];
 }
 
-type CellStatus = "compliant" | "partial" | "non-compliant";
+type CellStatus = "compliant" | "partial" | "non-compliant" | "not-evaluable";
 
 function toCellStatus(status: AuditResult["status"]): CellStatus {
   if (status === "Compliant") return "compliant";
   if (status === "Partial") return "partial";
+  if (status === "not_evaluable") return "not-evaluable";
   return "non-compliant";
 }
 
@@ -38,6 +40,9 @@ export function ComplianceHeatmap({ auditResults }: ComplianceHeatmapProps) {
         <span className="heatmap-legend-item">
           <span className="heatmap-swatch non-compliant" /> Non-compliant
         </span>
+        <span className="heatmap-legend-item">
+          <span className="heatmap-swatch not-evaluable" /> Not Evaluable
+        </span>
       </div>
 
       <div className="heatmap-rows">
@@ -45,7 +50,7 @@ export function ComplianceHeatmap({ auditResults }: ComplianceHeatmapProps) {
           const domain = STANDARD_DEFINITIONS[result.standard_audited]?.domain ?? "";
           const cells = result.results;
           const compliantCount = cells.filter((c) => c.status === "Compliant").length;
-          const score = Math.round(result.global_score_percentage);
+          const score = formatScore(result.global_score_percentage);
 
           return (
             <div key={result.standard_audited} className="heatmap-row">
@@ -75,7 +80,7 @@ export function ComplianceHeatmap({ auditResults }: ComplianceHeatmapProps) {
                 <span className="heatmap-row-ratio">
                   {compliantCount}/{cells.length}
                 </span>
-                <span className="heatmap-row-score">{score}%</span>
+                <span className="heatmap-row-score">{score}</span>
               </div>
             </div>
           );

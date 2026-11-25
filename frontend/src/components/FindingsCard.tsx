@@ -12,11 +12,13 @@ const TAG_LABELS: Record<ComplianceTag, string> = {
   compliant: "Compliant",
   partial: "Partial",
   "non-compliant": "Non-compliant",
+  "not-evaluable": "Not Evaluable",
 };
 
 function toTag(status: AuditResult["status"]): ComplianceTag {
   if (status === "Compliant") return "compliant";
   if (status === "Partial") return "partial";
+  if (status === "not_evaluable") return "not-evaluable";
   return "non-compliant";
 }
 
@@ -27,6 +29,7 @@ function toSeverity(risk: AuditResult["risk_level"]): FindingSeverity {
 }
 
 function findingTitle(result: AuditResult): string {
+  if (result.status === "not_evaluable") return result.note || result.gaps;
   if (result.status === "Compliant") return result.evidence_found;
   return result.gaps || result.recommendation;
 }
@@ -126,6 +129,23 @@ export function FindingsCard({ auditResults }: FindingsCardProps) {
                     <section className="finding-section">
                       <h4 className="finding-section-title">Recommendation</h4>
                       <p className="finding-section-body">{finding.raw.recommendation}</p>
+                    </section>
+                  )}
+
+                  {(finding.raw.checks?.length ?? 0) > 0 && (
+                    <section className="finding-section">
+                      <h4 className="finding-section-title">Checks</h4>
+                      <ul className="check-list">
+                        {finding.raw.checks!.map((c) => (
+                          <li key={c.check_id} className={`check-item ${c.found ? "found" : "missing"}`}>
+                            <span className="check-mark" aria-hidden>{c.found ? "✓" : "✗"}</span>
+                            <span>
+                              <span className="check-id">{c.check_id}</span> {c.question}
+                              {c.evidence_unverified && <em className="check-unverified"> (unverified)</em>}
+                            </span>
+                          </li>
+                        ))}
+                      </ul>
                     </section>
                   )}
 
