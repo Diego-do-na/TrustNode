@@ -41,11 +41,54 @@ Cada opción acepta listas separadas por comas; se corre el producto cartesiano.
 | `--pad-pages` | 0 | inserta el PDF real entre N páginas de relleno de otros dominios: simula PDFs grandes y mide si la recuperación y el modelo se distraen |
 | `--repeats` | 1 | repeticiones por configuración (estabilidad) |
 | `--truth` | `bench/truth/datagraphic_isms.json` | documento + estados esperados |
+| `--verify` | `none` | `judge` añade la segunda pasada del verificador a cada check "found" (ver más abajo) |
 | `--pull` | | descarga modelos que falten |
+| `--keep-loaded` | | no descarga el LLM al cambiar de modelo (con 8 GB, déjalo apagado) |
+| `--out` | `bench/results/<fecha>_<host>/` | carpeta de resultados |
 
 Resultados en `bench/results/<fecha>_<host>/`: `summary.md` (tabla), `runs.jsonl` (todo), `raw/runNNN.json` (respuesta completa y cada respuesta cruda del modelo, para ver *por qué* falló un control) y `machine.json` (hardware, versión de Ollama, digest de cada modelo).
 
 Las mismas perillas existen en producción como variables de entorno (defaults = comportamiento actual): `TRUSTNODE_MODEL`, `TRUSTNODE_EMBED_MODEL`, `TRUSTNODE_CHUNK_WORDS`, `TRUSTNODE_CHUNK_OVERLAP`, `TRUSTNODE_EMBED_DOC_PREFIX`, `TRUSTNODE_EMBED_QUERY_PREFIX`, `TRUSTNODE_EMBED_NUM_CTX`, `TRUSTNODE_EMBED_BATCH`, `TRUSTNODE_NUM_CTX`, `TRUSTNODE_NUM_PREDICT`, `TRUSTNODE_CHECK_RETRIEVAL` (`per_check_k<N>`).
+
+## Cómo leer la tabla (`summary.md`)
+
+| Columna | Significado |
+|---|---|
+| `accuracy` | controles evaluables (9 en Datagraphic) con estado dentro del conjunto aceptable; media de las repeticiones |
+| `stable` | `yes` si todas las repeticiones dieron los mismos estados (`-` con una sola repetición) |
+| `wrong (causa)` | controles con estado incorrecto y por qué: `model-filler` = dio por cumplido un check citando una página de relleno (falso positivo seguro); `retrieval` = check no encontrado y ningún fragmento del documento real llegó a su top-k; `model` = otro error de juicio |
+| `lucky` | controles con estado correcto pero apoyados en evidencia de relleno: aciertos por suerte |
+| `filler cites` | checks dados por cumplidos con citas de relleno (media). Debe ser 0 |
+| `retrieval hit` | fracción de checks con al menos un fragmento del documento real en su top-k |
+| `bad cites` | citas que no aparecen en el texto de su página (verificado aparte con PyMuPDF). Debe ser 0 |
+| `leaks` | términos prohibidos en la salida (p. ej. "MFA", que el PDF no menciona). Debe ser 0 |
+| `ingest s` | tiempo de ingesta (extracción + embeddings + Chroma) |
+| `wall s` | tiempo de la auditoría completa |
+| `s/call`, `gen tok/s` | segundos por llamada al LLM y tokens generados por segundo |
+| `over ctx` | llamadas cuyo prompt estimado excede `num_ctx` (Ollama trunca en silencio y se pierden las reglas). Debe ser 0 |
+| `mem GB` | memoria del LLM cargado según `/api/ps` |
+
+Para decidir, el orden de importancia es: `filler cites` y `bad cites` en 0, luego `accuracy` y `stable`, y al final el tiempo.
+
+## Línea base (para comparar en la Mac mini)
+
+M5 Pro 24 GB, Ollama 0.40.11, `llama3.1:8b` (digest `46e0c10c039e`, el mismo modelo de producción), `nomic-embed-text`, chunks 500/50, k=3, `num_ctx` 6144, sin verificador. Tests en verde: 72 offline, 17 de integración real + 1 xfail esperado (6.2), 6 de frontend.
+
+| Documento | accuracy | Falla (causa) | filler cites | retrieval hit | bad cites | auditoría | Fecha |
+|---|---|---|---|---|---|---|---|
+| PDF real (7 págs), 2 repeticiones | 8/9, estable | 6.2 (model) | 0 | 100 % | 0 | 47–63 s | 25-nov |
+| 1 007 págs | 7/9 | 6.2 (model-filler), A.5.29 (retrieval) | ~5 | 68 % | 0 | ~62 s (ingesta 10 s) | 25-nov |
+| 3 007 págs | 7–8/9 | A.5.29 (retrieval), 6.2 a veces | 5 | 64–68 % | 0 | ~60 s (ingesta 28 s) | 11-nov |
+
+Comando para reproducirla en otra máquina:
+
+```bash
+.venv/bin/python bench/run_bench.py --models llama3.1:8b --pad-pages 0,1000,3000 --repeats 2
+```
+
+## Agregar otro documento
+
+Copia `truth/datagraphic_isms.json` y cambia `pdf` (ruta relativa al JSON), `standard`, `doc_type`, `acceptable` (estados aceptables por control, **revisados por una persona**) y los términos prohibidos. Después corre con `--truth bench/truth/<nuevo>.json`. Con un solo documento no se distingue "mejoró" de "se ajustó a ese PDF".
 
 ## Plan sugerido para el fin de semana
 
@@ -53,7 +96,8 @@ Las mismas perillas existen en producción como variables de entorno (defaults =
 2. **Recuperación con los 2 mejores**: `--k 3,5 --embed-prefix none,nomic --pad-pages 120`. Con PDFs grandes la recuperación es el cuello de botella (ver hallazgos abajo).
 3. **Embeddings**: `--embed-models nomic-embed-text,mxbai-embed-large,bge-m3` (bge-m3 es multilingüe: importa si habrá políticas en español).
 4. **Chunks**: `--chunk-words 250,500` con el mejor par de los pasos anteriores.
-5. **Velocidad**: `--num-predict 256` y `--num-ctx 4096,6144` sobre la mejor configuración: solo vale si la precisión no baja y `over ctx` sigue en 0.
+5. **Verificador**: `--verify none,judge` con el mejor modelo. Con un modelo mejor que el 8B el verificador podría dejar de rechazar evidencia válida.
+6. **Velocidad**: `--num-predict 256` y `--num-ctx 4096,6144` sobre la mejor configuración: solo vale si la precisión no baja y `over ctx` sigue en 0.
 
 Cada auditoría del PDF de 7 páginas hace ~30 llamadas al LLM. En una M5 Pro tardó ~1 min con llama3.1 8B; en una M1 espera ~3–4×. Calcula antes de lanzar un barrido grande: corridas × minutos.
 
